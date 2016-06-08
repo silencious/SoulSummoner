@@ -7,7 +7,10 @@ Build/
 # Unity generated #
 # =============== #
 Temp/
+Obj/
+UnityGenerated/
 Library/
+Assets/AssetStoreTools*
 
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
@@ -32,5 +35,6 @@ obj/
 ._*
 .Spotlight-V100
 .Trashes
+Icon?
 ehthumbs.db
 Thumbs.db
