@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="gb2312"?>
+<SoulCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Souls>
+    <Soul name="slime">
+      <elements>
+        <metal>1</metal>
+        <plant>1</plant>
+        <earth>1</earth>
+        <water>1</water>
+        <fire>1</fire>
+      </elements>
+    </Soul>
+  </Souls>
+</SoulCollection>

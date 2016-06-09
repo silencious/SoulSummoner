@@ -2,8 +2,9 @@
 
 using System.Collections;
 
-public class PCController : MonoBehaviour
+public class PCBehaviour : SoulBehaviour
 {
+	// control relative
 	public Animator anim;
 	public Rigidbody rb;
 	public Camera cam;
@@ -11,8 +12,16 @@ public class PCController : MonoBehaviour
 	public float jumpSpeed;
 	public bool onGround;
 
-	void Start ()
+	// gameplay relative
+	Elements container;		// elements the PC has collected
+
+	protected virtual void Start ()
 	{
+		// init gameplay relative parameters
+		base.Start ();
+		container = Elements.zero;	// empty initial element container
+
+		// init moving parameters
 		anim = GetComponent<Animator> ();
 		rb = GetComponent<Rigidbody> ();
 		moveSpeed = 15.0f;
@@ -20,8 +29,28 @@ public class PCController : MonoBehaviour
 		onGround = true;
 	}
 
-	void Update ()
+	protected virtual void Update ()
 	{
+		if(hp<=0){
+			HandleDeath ();
+		}
+		HandleMove ();
+		HandleAction ();
+	}
+
+	protected virtual void OnCollisionEnter(Collision other){
+		//Debug.Log ("collision enter");
+		if (other.gameObject.CompareTag ("Terrain")) {
+			onGround = true;
+			//anim.SetBool ("jumping", false);
+		}
+	}
+
+	void OnCollisionStay(Collision other){
+		
+	}
+
+	void HandleMove(){
 		float vertical = Input.GetAxis ("Vertical");
 		float horizontal = Input.GetAxis ("Horizontal");
 
@@ -40,7 +69,6 @@ public class PCController : MonoBehaviour
 
 
 		//anim.SetFloat ("velocity", velocity.magnitude);
-
 		if (Input.GetKey (KeyCode.Space) && onGround) {
 			velocity.y = jumpSpeed;
 			onGround = false;
@@ -52,23 +80,33 @@ public class PCController : MonoBehaviour
 
 		// set velocity of rigidbody
 		rb.velocity =velocity;
+	}
 
-		if (Input.GetMouseButton (0)) {
+	void HandleAction(){
+		if(Input.GetMouseButtonDown(0)){
+			// left, summon/cast
 			//anim.Play ("Reach");
+			Cast ();
+		}
+		if(Input.GetMouseButtonDown(1)){
+			// right, absorb
+			Absorb ();
+		}
+		// switch spell as key pressed
+		if(Input.GetKeyDown(KeyCode.Alpha0)){
+
 		}
 	}
 
-	void OnCollisionEnter(Collision other){
-		//Debug.Log ("collision enter");
-		if (other.gameObject.CompareTag ("Terrain")) {
-			onGround = true;
-			//anim.SetBool ("jumping", false);
-		}
+	void HandleDeath(){
+		
 	}
 
-	void OnCollisionStay(Collision other){
-		if (other.gameObject.CompareTag ("Cube") && Input.GetMouseButton(0)) {
-			other.gameObject.SendMessage ("Explode");
-		}
+	void Cast(){
+		
+	}
+
+	void Absorb(){
+		
 	}
 }
