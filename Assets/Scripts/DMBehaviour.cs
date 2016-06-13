@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class DMBehaviour : MonoBehaviour {
 	string stageName;
-	Elements container;			// Elements DM has accumulated
+	Elements reserve;			// Elements DM has accumulated
 
 	DataAdapter data;
 	Stage stage;
@@ -15,7 +15,7 @@ public class DMBehaviour : MonoBehaviour {
 	void Start () {
 		stageName = EditorSceneManager.GetActiveScene ().name;
 		Debug.Log (stageName + " DM starts");
-		container = Elements.zero;
+		reserve = Elements.zero;
 
 		data = DataAdapter.GetInstance ();
 		stage = data.GetStageByName (stageName);
@@ -29,8 +29,8 @@ public class DMBehaviour : MonoBehaviour {
 		while (remTime >= stage.gapTime) {
 			remTime -= stage.gapTime;
 			var acc = stage.baseElements * stage.gapTime * TimeFactor(stage.factor) * Random.Range (0.5f, 1.5f);
-			container += acc;
-			GenerateMobs ();
+			reserve += acc;
+			SpawnMobs ();
 		}
 	}
 
@@ -41,24 +41,24 @@ public class DMBehaviour : MonoBehaviour {
 		return Mathf.Pow(f, t/200);
 	}
 
-	// Note: for now, we generate no more than 1 mob each time
-	void GenerateMobs(){
+	// Note: for now, we spawn no more than 1 mob each time
+	void SpawnMobs(){
 		// choose from mob list
 		var mob = stage.mobs[Random.Range(0,stage.mobs.Count)];
 		var e = data.GetElementsByName (mob);
-		if (!container.over (e))
+		if (!reserve.over (e))
 			return;			// not enough for the mob, pass
 		
 		// choose from spawns
 		// Note: mob should spawn near PC
-		var spawn = stage.spawns [Random.Range (0, stage.spawns.Count)];
+		var pos = stage.spawnPoints [Random.Range (0, stage.spawnPoints.Count)];
 
-		// generate mob
-		GenerateMob(spawn, mob);
+		// spawn mob
+		SpawnMob (pos, mob);
 	}
 
-	// generate a mob, decrease container accordingly
-	void GenerateMob(Vector3 pos, string soulName){
+	// spawn a mob, decrease reserve accordingly
+	void SpawnMob(Vector3 pos, string soulName){
 		var obj = Resources.Load ("Prefabs/Mob/" + soulName);
 		if (obj == null){
 			Debug.Log ("Mob '" + soulName + "' not found");
@@ -71,7 +71,7 @@ public class DMBehaviour : MonoBehaviour {
 			return;
 		}
 		soul.soulName = soulName;
-		container -= soul.elements;
+		reserve -= soul.elements;
 	}
 
 	void Route(GameObject gameObject, Vector3 pos){

@@ -18,14 +18,14 @@ public class PCBehaviour : SoulBehaviour
 	public bool onGround;
 
 	// gameplay relative
-	Elements container;		// elements the PC has collected
+	Elements reserve;		// elements the PC has collected
 	float maxAbsorbDistance = 10.0f;
 
 	protected override void Start ()
 	{
 		// init gameplay relative parameters
 		base.Start ();
-		container = Elements.zero;	// empty initial element container
+		reserve = Elements.zero;	// empty initial element reserve
 
 		// init moving parameters
 		anim = GetComponent<Animator> ();
@@ -137,8 +137,8 @@ public class PCBehaviour : SoulBehaviour
 			// if the object can be absorbed
 			var soul = obj.GetComponent<SoulBehaviour> ();
 			if(soul!=null){
-				// absorb the soul: add its elements to pc's container, destroy soul obj
-				container = Elements.max (container + soul.elements, elements);
+				// absorb the soul: add its elements to pc's reserve, destroy soul obj
+				reserve = Elements.max (reserve + soul.elements, elements);
 				Destroy (soul);
 			}
 		}

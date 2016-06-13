@@ -60,18 +60,18 @@ public class Stage{
 	public float gapTime;
 	[XmlElement("mobs")]
 	public List<string> mobs;
-	[XmlElement("spawns")]
-	public List<Vector3> spawns;
+	[XmlElement("spawnPoints")]
+	public List<Vector3> spawnPoints;
 
 	private Stage(){}
 
-	public Stage(string name, Elements baseElements, float factor, float gapTime, List<string> mobs, List<Vector3> spawns){
+	public Stage(string name, Elements baseElements, float factor, float gapTime, List<string> mobs, List<Vector3> spawnPoints){
 		this.stageName = name;
 		this.baseElements = baseElements;
 		this.factor = factor;
 		this.gapTime = gapTime;
 		this.mobs = mobs;
-		this.spawns = spawns;
+		this.spawnPoints = spawnPoints;
 	}
 
 	public static Stage empty = new Stage ("", Elements.one, 1, 1, new List<string> (), new List<Vector3> ());
