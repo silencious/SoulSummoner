@@ -139,6 +139,7 @@ public class PCBehaviour : SoulBehaviour
 			if(soul!=null){
 				// absorb the soul: add its elements to pc's container, destroy soul obj
 				container = Elements.max (container + soul.elements, elements);
+				Destroy (soul);
 			}
 		}
 	}

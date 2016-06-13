@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.Xml;
 using System.Xml.Serialization;
@@ -88,6 +89,10 @@ public class Elements{
 		return new Elements (e1.metal - e2.metal, e1.plant - e2.plant, e1.earth - e2.earth, e1.water - e2.water, e1.fire - e2.fire);
 	}
 
+	public static Elements operator *(Elements e, float f){
+		return new Elements (e.metal * f, e.plant * f, e.earth * f, e.water * f, e.fire * f);
+	}
+
 	/* if this Elements' five values are all over e */
 	public bool over(Elements e){
 		return metal >= e.metal && plant >= e.plant && earth >= e.earth && water >= e.water && fire >= e.fire;
@@ -133,13 +138,14 @@ public class SoulBehaviour : MonoBehaviour {
 		// init parameters
 		data = DataAdapter.GetInstance ();
 		elements = data.GetElementsByName (soulName);
-		//Debug.Log (soulName+": "+elements);
+		Debug.Log (soulName+": "+elements);
 		hp = elements.sigma ();
 	}
 
 	// Update is called once per frame
 	protected virtual void Update () {
 		if(hp<=0){
+			Debug.Log (soulName + ":hp <= 0, destroy");
 			Destroy (gameObject);
 		}	
 	}
@@ -159,5 +165,6 @@ public class SoulBehaviour : MonoBehaviour {
 			soul.hp = 0;
 		}
 	}
+
 
 }

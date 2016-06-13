@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="gb2312"?>
 <SoulCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Souls>
-    <Soul name="slime">
+    <Soul name="Token">
       <elements>
         <metal>1</metal>
         <plant>1</plant>
