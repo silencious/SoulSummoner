@@ -4,18 +4,24 @@ using System.Collections;
 
 public class PCBehaviour : SoulBehaviour
 {
-	// control relative
 	public Animator anim;
 	public Rigidbody rb;
-	public Camera cam;
+
+	// camera relative
+	public Camera firstPersonCamera;
+	public Camera thirdPersonCamera;
+	private Camera currentCamera;
+
+	// physics relative
 	public float moveSpeed;
 	public float jumpSpeed;
 	public bool onGround;
 
 	// gameplay relative
 	Elements container;		// elements the PC has collected
+	float maxAbsorbDistance = 10.0f;
 
-	protected virtual void Start ()
+	protected override void Start ()
 	{
 		// init gameplay relative parameters
 		base.Start ();
@@ -29,16 +35,11 @@ public class PCBehaviour : SoulBehaviour
 		onGround = true;
 	}
 
-	protected virtual void Update ()
-	{
-		if(hp<=0){
-			HandleDeath ();
-		}
+	void FixedUpdate(){
 		HandleMove ();
-		HandleAction ();
 	}
 
-	protected virtual void OnCollisionEnter(Collision other){
+	protected override void OnCollisionEnter(Collision other){
 		//Debug.Log ("collision enter");
 		if (other.gameObject.CompareTag ("Terrain")) {
 			onGround = true;
@@ -50,11 +51,19 @@ public class PCBehaviour : SoulBehaviour
 		
 	}
 
+	protected override void Update ()
+	{
+		if(hp<=0){
+			HandleDeath ();
+		}
+		HandleAction ();
+	}
+
 	void HandleMove(){
 		float vertical = Input.GetAxis ("Vertical");
 		float horizontal = Input.GetAxis ("Horizontal");
 
-		Vector3 forward = cam.transform.forward;
+		Vector3 forward = thirdPersonCamera.transform.forward;
 		forward.y = 0;
 
 		forward.Normalize ();
@@ -83,13 +92,25 @@ public class PCBehaviour : SoulBehaviour
 	}
 
 	void HandleAction(){
+		if(Input.GetKeyDown(KeyCode.Tab)){
+			// switch camera
+			if(currentCamera==firstPersonCamera){
+				firstPersonCamera.enabled = false;
+				thirdPersonCamera.enabled = true;
+				currentCamera = thirdPersonCamera;
+			}else{
+				thirdPersonCamera.enabled = false;
+				firstPersonCamera.enabled = true;
+				currentCamera = firstPersonCamera;
+			}
+		}
 		if(Input.GetMouseButtonDown(0)){
-			// left, summon/cast
+			// left mouse button, summon/cast
 			//anim.Play ("Reach");
 			Cast ();
 		}
 		if(Input.GetMouseButtonDown(1)){
-			// right, absorb
+			// right mouse button, absorb
 			Absorb ();
 		}
 		// switch spell as key pressed
@@ -107,6 +128,18 @@ public class PCBehaviour : SoulBehaviour
 	}
 
 	void Absorb(){
-		
+		Ray ray = currentCamera.ScreenPointToRay (Input.mousePosition);
+		RaycastHit hit;
+		if (Physics.Raycast (ray, out hit)) {
+			if (hit.distance > maxAbsorbDistance)
+				return;
+			var obj = hit.collider.gameObject;
+			// if the object can be absorbed
+			var soul = obj.GetComponent<SoulBehaviour> ();
+			if(soul!=null){
+				// absorb the soul: add its elements to pc's container, destroy soul obj
+				container = Elements.max (container + soul.elements, elements);
+			}
+		}
 	}
 }

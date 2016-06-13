@@ -19,7 +19,7 @@ public class Elements{
 	[XmlElement("fire")]
 	public float fire{ get; set;}
 
-	public Elements():this(one){}
+	public Elements():this(zero){}
 
 	public Elements(float metal, float plant, float earth, float water, float fire){
 		this.metal = metal;
@@ -55,20 +55,19 @@ public class Elements{
 	}
 
 	public void normalize(){
-		lock (this) {
-			float mag = magnitude ();
-			if (mag <= 0)
-				return;
-			metal /= mag;
-			plant /= mag;
-			earth /= mag;
-			water /= mag;
-			fire /= mag;
-		}
+		float mag = magnitude ();
+		if (mag <= 0)
+			return;
+		metal /= mag;
+		plant /= mag;
+		earth /= mag;
+		water /= mag;
+		fire /= mag;
 	}
 
-	public float factor(Elements that){
-		Elements e1 = this.normalized (), e2 = that.normalized ();
+	public static float factor(Elements e1, Elements e2){
+		e1.normalize ();
+		e2.normalize ();
 		float index = e1.metal*(e2.plant-e2.fire)+
 			e1.plant*(e2.earth-e2.metal)+
 			e1.earth*(e2.water-e2.plant)+
@@ -77,7 +76,42 @@ public class Elements{
 		return Mathf.Pow (2, index);
 	}
 
-	public static float factor(Elements e1, Elements e2){return e1.factor (e2);}
+	public float factor(Elements other){
+		return factor (this, other);
+	}
+
+	public static Elements operator +(Elements e1, Elements e2){
+		return new Elements (e1.metal + e2.metal, e1.plant + e2.plant, e1.earth + e2.earth, e1.water + e2.water, e1.fire + e2.fire);
+	}
+
+	public static Elements operator -(Elements e1, Elements e2){
+		return new Elements (e1.metal - e2.metal, e1.plant - e2.plant, e1.earth - e2.earth, e1.water - e2.water, e1.fire - e2.fire);
+	}
+
+	/* if this Elements' five values are all over e */
+	public bool over(Elements e){
+		return metal >= e.metal && plant >= e.plant && earth >= e.earth && water >= e.water && fire >= e.fire;
+	}
+
+	public bool nonneg(){
+		return over (zero);
+	}
+
+	public static Elements max(Elements e1, Elements e2){
+		return new Elements (Mathf.Max (e1.metal, e2.metal),
+			Mathf.Max (e1.plant, e2.plant),
+			Mathf.Max (e1.earth, e2.earth),
+			Mathf.Max (e1.water, e2.water),
+			Mathf.Max (e1.fire, e2.fire));
+	}
+
+	public static Elements min(Elements e1, Elements e2){
+		return new Elements (Mathf.Min (e1.metal, e2.metal),
+			Mathf.Min (e1.plant, e2.plant),
+			Mathf.Min (e1.earth, e2.earth),
+			Mathf.Min (e1.water, e2.water),
+			Mathf.Min (e1.fire, e2.fire));
+	}
 
 	public override string ToString(){
 		return "{metal=" + metal + 

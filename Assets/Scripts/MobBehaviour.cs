@@ -4,16 +4,16 @@ using System.Collections;
 public class MobBehaviour : SoulBehaviour {
 
 	// Use this for initialization
-	protected virtual void Start () {
+	protected override void Start () {
 		base.Start ();
 	}
 	
 	// Update is called once per frame
-	protected virtual void Update () {
+	protected override void Update () {
 		base.Update ();
 	}
 
-	protected virtual void OnCollisionEnter(Collision other){
+	protected override void OnCollisionEnter(Collision other){
 		//Debug.Log ("collision enter");
 		var obj = other.gameObject;
 		var mob = obj.GetComponent<MobBehaviour> ();
