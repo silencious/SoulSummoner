@@ -11,6 +11,13 @@ public class DMBehaviour : MonoBehaviour {
 	Stage stage;
 	float remTime;
 
+	const string pcName = "pc";
+	GameObject pc;
+	List<GameObject> mobs = new List<GameObject>();
+
+	const string routeDir = "BitMaps/";
+	Texture2D routeMap;
+
 	// Use this for initialization
 	void Start () {
 		stageName = EditorSceneManager.GetActiveScene ().name;
@@ -21,7 +28,10 @@ public class DMBehaviour : MonoBehaviour {
 		stage = data.GetStageByName (stageName);
 
 		remTime = 0;
-		Test ();
+		pc = GameObject.Find (pcName);
+
+		routeMap = Resources.Load (routeDir + stageName) as Texture2D;
+		Debug.Log (routeMap.format);
 	}
 
 	void Update () {
@@ -44,6 +54,8 @@ public class DMBehaviour : MonoBehaviour {
 	// Note: for now, we spawn no more than 1 mob each time
 	void SpawnMobs(){
 		// choose from mob list
+		if (stage.mobs.Count == 0)
+			return;
 		var mob = stage.mobs[Random.Range(0,stage.mobs.Count)];
 		var e = data.GetElementsByName (mob);
 		if (!reserve.over (e))
@@ -51,34 +63,37 @@ public class DMBehaviour : MonoBehaviour {
 		
 		// choose from spawns
 		// Note: mob should spawn near PC
+		if (stage.spawnPoints.Count == 0)
+			return;
 		var pos = stage.spawnPoints [Random.Range (0, stage.spawnPoints.Count)];
 
 		// spawn mob
-		SpawnMob (pos, mob);
+		Spawn (pos, mob);
 	}
 
 	// spawn a mob, decrease reserve accordingly
-	void SpawnMob(Vector3 pos, string soulName){
-		var obj = Resources.Load ("Prefabs/Mob/" + soulName);
+	void Spawn(Vector3 pos, string soulName){
+		var obj = Resources.Load ("Prefabs/Mob/" + soulName, typeof(GameObject));
 		if (obj == null){
 			Debug.Log ("Mob '" + soulName + "' not found");
 			return;
 		}
-		var gameObj = Instantiate (obj, pos, Quaternion.identity) as GameObject;
-		var soul = gameObj.GetComponent<MobBehaviour> ();
-		if(soul==null){
+		var gameObject = Instantiate (obj, pos, Quaternion.identity) as GameObject;
+		var mob = gameObject.GetComponent<MobBehaviour> ();
+		if(mob==null){
 			Debug.Log ("Mob '" + soulName + "' is not attached with script");
 			return;
 		}
-		soul.soulName = soulName;
-		reserve -= soul.elements;
+		mob.soulName = soulName;
+		reserve -= mob.elements;
+		mobs.Add (gameObject);
 	}
 
-	void Route(GameObject gameObject, Vector3 pos){
+	void RouteTo(GameObject gameObject, Vector3 pos){
 		
 	}
 
 	void Test(){
-		
+		Texture2D tex = new Texture2D (50, 50, TextureFormat.Alpha8, false);
 	}
 }

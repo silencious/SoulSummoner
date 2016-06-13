@@ -13,7 +13,6 @@ public class PCBehaviour : SoulBehaviour
 	private Camera currentCamera;
 
 	// physics relative
-	public float moveSpeed;
 	public float jumpSpeed;
 	public bool onGround;
 

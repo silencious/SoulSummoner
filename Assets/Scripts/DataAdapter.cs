@@ -161,12 +161,12 @@ public class DataAdapter {
 			Debug.Log ("Get Stage with null/empty name");
 			return Stage.empty;
 		}
-		Stage ret;
-		if(!stageDict.TryGetValue(name, out ret)){
+		Stage stage;
+		if(!stageDict.TryGetValue(name, out stage)){
 			Debug.Log ("Failed to find stage with name:" + name);
 			return Stage.empty;
 		}
-		return ret;		
+		return stage;		
 	}
 
 
