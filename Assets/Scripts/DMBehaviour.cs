@@ -45,7 +45,7 @@ public class DMBehaviour : MonoBehaviour {
 			SpawnMobs ();
 		}
 
-		Test ();
+		//Test ();
 	}
 
 	float TimeFactor(float f){

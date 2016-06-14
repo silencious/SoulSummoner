@@ -2,7 +2,6 @@
 using System.Collections;
 
 public class ThirdPersonCamera : MonoBehaviour {
-
 	public Transform lookAtObj;
 
 	private float maxDis = 50.0f;
