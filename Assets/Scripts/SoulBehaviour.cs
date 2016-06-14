@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class SoulBehaviour : MonoBehaviour {
 	public string soulName;		// name of the soul, should be set when the soul is instantiated
@@ -8,8 +9,12 @@ public class SoulBehaviour : MonoBehaviour {
 
 	protected DataAdapter data;
 	protected float moveSpeed = 0.0f;	// by default cannot move
-	protected float minMoveDis = 1.0f;
-	protected float maxMoveDis = 20.0f;
+	protected float minRouteDis = 1.0f;
+	protected float maxRouteDis = 20.0f;
+
+	public LinkedList<Vector3> waypoints;
+
+	public DMBehaviour dm;
 
 	// Use this for initialization
 	protected virtual void Start () {
@@ -18,6 +23,19 @@ public class SoulBehaviour : MonoBehaviour {
 		elements = data.GetElementsByName (soulName);
 		Debug.Log (soulName+": "+elements);
 		hp = elements.sigma ();
+	}
+
+	protected virtual void FixedUpdate(){
+		if(waypoints==null || waypoints.Count==0){
+			dm.ReRoute (this);
+			return;
+		}
+		var target = waypoints.First.Value;
+		while (CloseEnough (target) && waypoints.Count>1) {
+			waypoints.RemoveFirst();
+			target = waypoints.First.Value;
+		}
+		MoveTowards (target, Time.fixedDeltaTime);
 	}
 
 	// Update is called once per frame
@@ -48,14 +66,7 @@ public class SoulBehaviour : MonoBehaviour {
 		transform.position += (dst - transform.position) * moveSpeed * time;
 	}
 
-	public virtual void MoveTo(Vector3 dst, float time){
-		float distance = (dst - transform.position).magnitude;
-		if (distance < minMoveDis) {
-			return;
-		} else if (distance < maxMoveDis) {
-			MoveTowards (dst, time);
-		} else {
-			
-		}
+	bool CloseEnough(Vector3 v){
+		return (v - transform.position).magnitude < minRouteDis;
 	}
 }

@@ -15,6 +15,9 @@ public class ThirdPersonCamera : MonoBehaviour {
 	private float theta=30.0f;
 
 	void Start(){
+		if(lookAtObj==null){
+			lookAtObj = transform.parent;
+		}
 		Vector3 vec = transform.position - lookAtObj.transform.position;
 		float factor = 180.0f / Mathf.PI;
 		theta = Mathf.Atan2(vec.x,vec.y)*factor;

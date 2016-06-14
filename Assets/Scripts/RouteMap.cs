@@ -168,7 +168,6 @@ public class RouteMap {
 	List<Position> Neighbors(Position pos, HashSet<Position> closeSet){
 		var ret = new List<Position> ();
 		int x = pos.x, y = pos.y;
-		Position p;
 		if(x>0){
 			AddNewPos (ret, new Position (x - 1, y), closeSet);
 			if(y>0){
@@ -211,7 +210,6 @@ public class RouteMap {
 		var cameFrom = new Dictionary<Position, Position> ();
 
 		//int maxLoop = 1000, count = 0;
-
 		while(openSet.Count>0){
 			var current = openSet.Dequeue ();
 			var pos = current.pos;
@@ -223,9 +221,7 @@ public class RouteMap {
 					pos = cameFrom [pos];
 				}
 				break;
-
 			}
-
 			/*
 			count++;
 			if (count > maxLoop){
@@ -235,8 +231,6 @@ public class RouteMap {
 				}
 				break;				
 			}*/
-
-
 			var neighbors = Neighbors (pos, closeSet);
 			//Debug.Log ("Neighbor size:" + neighbors.Count+"loop:"+count);
 			foreach(var neighbor in neighbors){

@@ -13,6 +13,7 @@ public class DMBehaviour : MonoBehaviour {
 
 	const string pcName = "pc";
 	GameObject pc;
+	Transform pcTransform;
 	List<GameObject> mobs = new List<GameObject>();
 
 	const string routeDir = "RouteMaps/";
@@ -29,9 +30,10 @@ public class DMBehaviour : MonoBehaviour {
 
 		remTime = 0;
 		pc = GameObject.Find (pcName);
+		pcTransform = pc.transform;
 
 		//routeMap = new RouteMap(routeDir+stageName);
-		routeMap = new RouteMap (routeDir + "test");
+		routeMap = new RouteMap (routeDir + stageName);
 	}
 
 	void Update () {
@@ -63,11 +65,18 @@ public class DMBehaviour : MonoBehaviour {
 		if (!reserve.over (e))
 			return;			// not enough for the mob, pass
 		
-		// choose from spawns
-		// Note: mob should spawn near PC
+		// choose from spawn points, spawn near PC
 		if (stage.spawnPoints.Count == 0)
 			return;
-		var pos = stage.spawnPoints [Random.Range (0, stage.spawnPoints.Count)];
+		var pos = stage.spawnPoints [0];
+		var dpos = (pcTransform.position - pos).magnitude;
+		foreach(var p in stage.spawnPoints){
+			var dp = (pcTransform.position - p).magnitude;
+			if(dp<dpos){
+				pos = p;
+				dpos = dp;
+			}
+		}
 
 		// spawn mob
 		Spawn (pos, mob);
@@ -87,24 +96,28 @@ public class DMBehaviour : MonoBehaviour {
 			return;
 		}
 		mob.soulName = soulName;
+		mob.dm = this;
 		reserve -= mob.elements;
 		mobs.Add (gameObject);
+		RouteTo (mob, pcTransform.position);
 	}
 
-	void RouteTo(GameObject gameObject, Vector3 pos){
-		
+	public void RouteTo(SoulBehaviour soul, Vector3 pos){
+		soul.waypoints = routeMap.Path (soul.transform.position, pos);
+	}
+
+	public void ReRoute(SoulBehaviour soul){
+		var mob = soul as MobBehaviour;
+		if(mob!=null){
+			RouteTo (mob, pcTransform.position);
+		}
 	}
 
 	void Test(){
 		if(Input.GetMouseButtonDown(0)){
-			var l = routeMap.Path (new Position (0, 0), new Position (22, 33));
-			Debug.Log (l.Count);
-			/*
-			int i = 0;
-			foreach(var p in l){
-				i++;
-				Debug.Log ("x="+Mathf.FloorToInt(p.x)+",y="+(49-Mathf.FloorToInt(p.z))+"i="+i);
-			}*/
+			var t = System.Diagnostics.Stopwatch.StartNew ();
+			var path = routeMap.Path (new Position (0, 0), new Position (220, 220));
+			Debug.Log ("step="+path.Count+" time="+t.Elapsed.TotalSeconds);
 		}
 	}
 }
