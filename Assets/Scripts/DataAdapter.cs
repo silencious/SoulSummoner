@@ -134,12 +134,12 @@ public class DataAdapter {
 
 	public Elements GetElementsByName(string name){
 		if (name == null||name.Equals("")){
-			Debug.Log ("Get Elements with null/empty name");
+			Debug.Log ("Get Elements with null/empty name, use empty soul");
 			return Elements.zero;
 		}
 		Soul soul;
 		if(!soulDict.TryGetValue(name, out soul)){
-			Debug.Log ("Failed to find soul with name:" + name);
+			Debug.Log ("Failed to find soul with name:" + name + ", use empty soul");
 			return Elements.zero;
 		}
 		return soul.elements;
@@ -158,12 +158,12 @@ public class DataAdapter {
 
 	public Stage GetStageByName(string name){
 		if (name == null||name.Equals("")){
-			Debug.Log ("Get Stage with null/empty name");
+			Debug.Log ("Get Stage with null/empty name, use empty stage");
 			return Stage.empty;
 		}
 		Stage stage;
 		if(!stageDict.TryGetValue(name, out stage)){
-			Debug.Log ("Failed to find stage with name:" + name);
+			Debug.Log ("Failed to find stage with name:" + name + ", use empty stage");
 			return Stage.empty;
 		}
 		return stage;		

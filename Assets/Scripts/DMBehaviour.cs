@@ -15,8 +15,8 @@ public class DMBehaviour : MonoBehaviour {
 	GameObject pc;
 	List<GameObject> mobs = new List<GameObject>();
 
-	const string routeDir = "BitMaps/";
-	Texture2D routeMap;
+	const string routeDir = "RouteMaps/";
+	RouteMap routeMap;
 
 	// Use this for initialization
 	void Start () {
@@ -30,8 +30,8 @@ public class DMBehaviour : MonoBehaviour {
 		remTime = 0;
 		pc = GameObject.Find (pcName);
 
-		routeMap = Resources.Load (routeDir + stageName) as Texture2D;
-		Debug.Log (routeMap.format);
+		//routeMap = new RouteMap(routeDir+stageName);
+		routeMap = new RouteMap (routeDir + "test");
 	}
 
 	void Update () {
@@ -42,6 +42,8 @@ public class DMBehaviour : MonoBehaviour {
 			reserve += acc;
 			SpawnMobs ();
 		}
+
+		Test ();
 	}
 
 	float TimeFactor(float f){
@@ -94,6 +96,15 @@ public class DMBehaviour : MonoBehaviour {
 	}
 
 	void Test(){
-		Texture2D tex = new Texture2D (50, 50, TextureFormat.Alpha8, false);
+		if(Input.GetMouseButtonDown(0)){
+			var l = routeMap.Path (new Position (0, 0), new Position (22, 33));
+			Debug.Log (l.Count);
+			/*
+			int i = 0;
+			foreach(var p in l){
+				i++;
+				Debug.Log ("x="+Mathf.FloorToInt(p.x)+",y="+(49-Mathf.FloorToInt(p.z))+"i="+i);
+			}*/
+		}
 	}
 }
