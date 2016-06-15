@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MobBehaviour : SoulBehaviour {
+public class MobBehaviour : LiveBehaviour {
 
 	// Use this for initialization
 	protected override void Start () {
@@ -13,17 +13,18 @@ public class MobBehaviour : SoulBehaviour {
 		base.Update ();
 	}
 
+	protected override void FixedUpdate(){
+		//HandleMove ();
+		base.FixedUpdate ();
+	}
+
 	protected override void OnCollisionEnter(Collision other){
 		//Debug.Log ("collision enter");
+		base.OnCollisionEnter (other);
 		var obj = other.gameObject;
-		var mob = obj.GetComponent<MobBehaviour> ();
-		if(mob!=null){
-			Fight (mob);
-		}
-		
-		var pc = obj.GetComponent<PCBehaviour> ();
-		if(pc!=null){
-			Fight (pc);
-		}		
+		var live = obj.GetComponent<LiveBehaviour> ();
+		if ((live != null) && !(live is MobBehaviour)) {	// not a mob, fight it
+			Fight (live);
+		}	
 	}
 }

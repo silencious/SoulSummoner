@@ -11,10 +11,11 @@ public class DMBehaviour : MonoBehaviour {
 	Stage stage;
 	float remTime;
 
-	const string pcName = "pc";
+	const string pcName = "PC";
 	GameObject pc;
 	Transform pcTransform;
 	List<GameObject> mobs = new List<GameObject>();
+	List<GameObject> lives = new List<GameObject>();
 
 	const string routeDir = "RouteMaps/";
 	RouteMap routeMap;
@@ -79,11 +80,11 @@ public class DMBehaviour : MonoBehaviour {
 		}
 
 		// spawn mob
-		Spawn (pos, mob);
+		Spawn (mob, pos, ref reserve);
 	}
 
 	// spawn a mob, decrease reserve accordingly
-	void Spawn(Vector3 pos, string soulName){
+	private void Spawn(string soulName, Vector3 pos, ref Elements reserve){
 		var obj = Resources.Load ("Prefabs/Mob/" + soulName, typeof(GameObject));
 		if (obj == null){
 			Debug.Log ("Mob '" + soulName + "' not found");
@@ -91,25 +92,72 @@ public class DMBehaviour : MonoBehaviour {
 		}
 		var gameObject = Instantiate (obj, pos, Quaternion.identity) as GameObject;
 		var mob = gameObject.GetComponent<MobBehaviour> ();
-		if(mob==null){
-			Debug.Log ("Mob '" + soulName + "' is not attached with script");
+		if(mob!=null){
+			mob.soulName = soulName;
+			mob.dm = this;
+			reserve -= data.GetElementsByName (soulName);
+			mobs.Add (gameObject);
+			ReRoute (mob);
+			Debug.Log ("Spawn mob:" + soulName);
 			return;
 		}
-		mob.soulName = soulName;
-		mob.dm = this;
-		reserve -= mob.elements;
-		mobs.Add (gameObject);
-		RouteTo (mob, pcTransform.position);
+
+		Debug.Log (soulName + "' is not attached with script");
 	}
 
-	public void RouteTo(SoulBehaviour soul, Vector3 pos){
-		soul.waypoints = routeMap.Path (soul.transform.position, pos);
+	// summon a soul
+	public void Summon(string soulName, Vector3 pos, ref Elements reserve){
+		var obj = Resources.Load ("Prefabs/Summon/" + soulName, typeof(GameObject));
+		if (obj == null){
+			Debug.Log ("Soul '" + soulName + "' not found");
+			return;
+		}
+		var gameObject = Instantiate (obj, pos, Quaternion.identity) as GameObject;
+		var live = gameObject.GetComponent<LiveBehaviour> ();
+		if(live!=null){
+			live.soulName = soulName;
+			live.dm = this;
+			reserve -= data.GetElementsByName (soulName);
+			lives.Add (gameObject);
+			ReRoute (live);
+			Debug.Log ("Summon soul:" + soulName);
+			return;
+		}
 	}
 
-	public void ReRoute(SoulBehaviour soul){
-		var mob = soul as MobBehaviour;
-		if(mob!=null){
-			RouteTo (mob, pcTransform.position);
+	public Vector3 PickMob (Vector3 livePos){
+		if(mobs.Count==0){
+			return pc.transform.position;
+		}else{
+			return mobs[Random.Range(0, mobs.Count)].transform.position;
+		}
+	}
+
+	public void RouteTo(LiveBehaviour live, Vector3 pos){
+		//Debug.Log ("Route from " + live.transform.position + " to " + pos);
+		var path = routeMap.Path (live.transform.position, pos);
+		if(path.Count==0){
+			path.AddLast (pos);
+		}else{
+			path.Last.Value = pos;
+		}
+		live.waypoints = path;
+	}
+
+	public void ReRoute(LiveBehaviour live){
+		if(live is MobBehaviour){
+			RouteTo (live, pcTransform.position);
+		}else{
+			RouteTo (live, PickMob (live.transform.position));
+		}
+	}
+
+	public void Remove(GameObject obj){
+		var live = obj.GetComponent<LiveBehaviour> ();
+		if(live is MobBehaviour){
+			mobs.Remove (obj);
+		}else{
+			lives.Remove (obj);
 		}
 	}
 

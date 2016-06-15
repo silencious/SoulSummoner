@@ -1,5 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="gb2312"?>
 <StageCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Stages>
+    <Stage stageName="Stage00">
+      <baseElements>
+        <metal>1</metal>
+        <plant>1</plant>
+        <earth>1</earth>
+        <water>1</water>
+        <fire>1</fire>
+      </baseElements>
+      <factor>1</factor>
+      <gapTime>5</gapTime>
+      <mobs>
+        <mob>MobToken</mob>
+      </mobs>
+      <spawnPoints>
+        <point>
+          <x>10</x>
+          <y>1</y>
+          <z>10</z>
+        </point>
+        <point>
+          <x>20</x>
+          <y>1</y>
+          <z>20</z>
+        </point>
+      </spawnPoints>
+    </Stage>
   </Stages>
 </StageCollection>

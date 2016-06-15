@@ -58,9 +58,9 @@ public class Stage{
 	public float factor;
 	[XmlElement("gapTime")]
 	public float gapTime;
-	[XmlElement("mobs")]
+	[XmlArray("mobs"), XmlArrayItem("mob")]
 	public List<string> mobs;
-	[XmlElement("spawnPoints")]
+	[XmlArray("spawnPoints"), XmlArrayItem("point")]
 	public List<Vector3> spawnPoints;
 
 	private Stage(){}
@@ -142,7 +142,7 @@ public class DataAdapter {
 			Debug.Log ("Failed to find soul with name:" + name + ", use empty soul");
 			return Elements.zero;
 		}
-		return soul.elements;
+		return new Elements(soul.elements);
 	}
 
 	public List<Soul> Names2Souls(List<string> names){
@@ -169,5 +169,14 @@ public class DataAdapter {
 		return stage;		
 	}
 
-
+	void Test(){
+		var stageContainer = StageContainer.Load (stagePath);
+		var s = Stage.empty;
+		s.mobs.Add ("Token");
+		s.mobs.Add ("Spider");
+		s.spawnPoints.Add (Vector3.zero);
+		s.spawnPoints.Add (Vector3.one);
+		stageContainer.stages.Add (s);
+		stageContainer.Save (stagePath);
+	}
 }

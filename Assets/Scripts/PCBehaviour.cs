@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
-using System.Diagnostics;
 using System.Collections;
 
-public class PCBehaviour : SoulBehaviour
+public class PCBehaviour : LiveBehaviour
 {
 	public Animator anim;
 	public Rigidbody rb;
@@ -18,17 +17,19 @@ public class PCBehaviour : SoulBehaviour
 
 	// gameplay relative
 	Elements reserve;		// elements the PC has collected
+	float castDistance = 2.0f;
 	float maxClickDistance = 10.0f;
 	float minMoveSpeed = 0.1f;
 
 	float minLeftPressTime = 1.0f;
 	float minRightPressTime = 1.0f;
-	Stopwatch leftPressTimer;
-	Stopwatch rightPressTimer;
+	System.Diagnostics.Stopwatch leftPressTimer;
+	System.Diagnostics.Stopwatch rightPressTimer;
 
 	protected override void Start ()
 	{
 		// init gameplay relative parameters
+		soulName = "PC";
 		base.Start ();
 		reserve = Elements.zero;	// empty initial element reserve
 
@@ -47,31 +48,36 @@ public class PCBehaviour : SoulBehaviour
 		firstPersonCamera.enabled = false;
 		thirdPersonCamera.enabled = true;
 		currentCamera = thirdPersonCamera;
+
+		leftPressTimer = System.Diagnostics.Stopwatch.StartNew();
+		leftPressTimer.Reset ();
+		rightPressTimer = System.Diagnostics.Stopwatch.StartNew();
+		rightPressTimer.Reset ();
 	}
 
 	protected override void FixedUpdate(){
-		base.FixedUpdate ();
-		HandleMove ();
+		//HandleMove ();
+		if(waypoints==null || waypoints.Count==0){
+			return;
+		}
+		DoRoute();
 	}
 
 	protected override void OnCollisionEnter(Collision other){
 		//Debug.Log ("collision enter");
-		if (other.gameObject.CompareTag ("Terrain")) {
+		base.OnCollisionEnter (other);
+		/*if (other.gameObject.CompareTag ("Terrain")) {
 			onGround = true;
 			//anim.SetBool ("jumping", false);
-		}
+		}*/
 	}
 
-	void OnCollisionStay(Collision other){
-		
-	}
-
-	protected override void Update ()
-	{
+	protected override void Update (){
 		if(hp<=0){
 			HandleDeath ();
 		}
-		HandleAction ();
+		MouseEvents ();
+		KeyEvents ();
 	}
 
 	void HandleMove(){
@@ -107,43 +113,58 @@ public class PCBehaviour : SoulBehaviour
 		rb.velocity =velocity;
 	}
 
-	void HandleAction(){
-		if(Input.GetKeyDown(KeyCode.Tab)){
-			// switch camera
-			if(currentCamera==firstPersonCamera){
-				firstPersonCamera.enabled = false;
-				thirdPersonCamera.enabled = true;
-				currentCamera = thirdPersonCamera;
-			}else{
-				thirdPersonCamera.enabled = false;
-				firstPersonCamera.enabled = true;
-				currentCamera = firstPersonCamera;
-			}
-		}
-		if(Input.GetMouseButtonUp(0)){
-			if(leftPressTimer.Elapsed.TotalMinutes<minLeftPressTime){
+	void MouseEvents(){
+		// hold left
+		if(Input.GetMouseButtonUp(0) && leftPressTimer.IsRunning){
+			//Debug.Log ("left:"+leftPressTimer.Elapsed.TotalSeconds+" sec");
+			if(leftPressTimer.Elapsed.TotalSeconds<minLeftPressTime){
 				// click to route
-				var obj = MousedObject ();
-				if(obj!=null){
-					dm.RouteTo (this, obj.transform.position);
+				var p = MousedPoint ();
+				if((p-transform.position).magnitude<=maxRouteDis){
+					dm.RouteTo (this, p);
 				}
 			}else{
 				// hold left mouse button, summon/cast
 				Cast ();				
 			}
+			leftPressTimer.Reset();
 		}
 		if(Input.GetMouseButtonDown(0)){
-			leftPressTimer = Stopwatch.StartNew ();
+			leftPressTimer.Start();
 		}
 
+		// hold right
+		if(Input.GetMouseButtonUp(1) && rightPressTimer.IsRunning){
+			//Debug.Log ("right:"+rightPressTimer.Elapsed.TotalSeconds+" sec");
+			if(rightPressTimer.Elapsed.TotalSeconds<minRightPressTime){
+				// click to route
+				var p = MousedPoint ();
+				if((p-transform.position).magnitude<=maxRouteDis){
+					dm.RouteTo (this, p);
+				}
+			}else{
+				// hold right mouse button, absorb
+				Absorb ();
+			}
+			rightPressTimer.Reset();
+		}
 		if(Input.GetMouseButtonDown(1)){
-			// right mouse button, absorb
-			rightPressTimer = Stopwatch.StartNew ();
-			Absorb ();
+			rightPressTimer.Start();
 		}
-		// switch spell as key pressed
-		if(Input.GetKeyDown(KeyCode.Alpha0)){
+	}
 
+	void KeyEvents(){
+		if (Input.GetKeyDown (KeyCode.Tab)) {
+			// switch camera
+			if (currentCamera == firstPersonCamera) {
+				firstPersonCamera.enabled = false;
+				thirdPersonCamera.enabled = true;
+				currentCamera = thirdPersonCamera;
+			} else {
+				thirdPersonCamera.enabled = false;
+				firstPersonCamera.enabled = true;
+				currentCamera = firstPersonCamera;
+			}
 		}
 	}
 
@@ -151,21 +172,45 @@ public class PCBehaviour : SoulBehaviour
 		
 	}
 
+	string GetCurrentCandidate(){
+		return "LiveToken";
+	}
+
 	void Cast(){
-		
+		Ray ray = currentCamera.ScreenPointToRay (Input.mousePosition);
+		var d = ray.direction;
+		d.y = 0.0f;
+		d = d.normalized * castDistance;
+		var candidate = GetCurrentCandidate ();
+		if(reserve.over(data.GetElementsByName(candidate))){
+			dm.Summon (candidate, transform.position+d, ref reserve);
+		}else{
+			// test
+			dm.Summon (candidate, transform.position+d, ref reserve);
+		}
 	}
 
 	void Absorb(){
 		var obj = MousedObject ();
 		if(obj!=null){			
-			// if the object can be absorbed
 			var soul = obj.GetComponent<SoulBehaviour> ();
-			if(soul!=null){
+			// only non-live soul can be absorbed
+			if (soul != null && !(soul is LiveBehaviour)) {
+				Debug.Log ("Absorb " + soul.soulName);
 				// absorb the soul: add its elements to pc's reserve, destroy soul obj
 				reserve = Elements.max (reserve + soul.elements, elements);
-				Destroy (soul);
+				Destroy (soul.gameObject);
 			}
 		}
+	}
+
+	Vector3 MousedPoint(){
+		Ray ray = currentCamera.ScreenPointToRay (Input.mousePosition);
+		RaycastHit hit;
+		if (Physics.Raycast (ray, out hit)) {
+			return hit.point;
+		}
+		return new Vector3 (Mathf.NegativeInfinity, Mathf.NegativeInfinity, Mathf.NegativeInfinity);
 	}
 
 	GameObject MousedObject(){

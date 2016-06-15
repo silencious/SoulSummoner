@@ -1,14 +1,167 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SoulCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Souls>
-    <Soul name="Token">
+    <Soul name="PC">
       <elements>
-        <metal>1</metal>
-        <plant>1</plant>
-        <earth>1</earth>
+        <metal>100</metal>
+        <plant>100</plant>
+        <earth>100</earth>
+        <water>100</water>
+        <fire>100</fire>
+      </elements>
+    </Soul>
+    <Soul name="LiveToken">
+      <elements>
+        <metal>2</metal>
+        <plant>2</plant>
+        <earth>2</earth>
+        <water>2</water>
+        <fire>2</fire>
+      </elements>
+    </Soul>
+    <Soul name="MobToken">
+      <elements>
+        <metal>5</metal>
+        <plant>5</plant>
+        <earth>5</earth>
+        <water>5</water>
+        <fire>5</fire>
+      </elements>
+    </Soul>
+    <Soul name="MetalElement">
+      <elements>
+        <metal>10</metal>
+        <plant>0</plant>
+        <earth>0</earth>
+        <water>0</water>
+        <fire>0</fire>
+      </elements>
+    </Soul>
+    <Soul name="PlantElement">
+      <elements>
+        <metal>0</metal>
+        <plant>10</plant>
+        <earth>0</earth>
+        <water>0</water>
+        <fire>0</fire>
+      </elements>
+    </Soul>
+    <Soul name="EarthElement">
+      <elements>
+        <metal>0</metal>
+        <plant>0</plant>
+        <earth>10</earth>
+        <water>0</water>
+        <fire>0</fire>
+      </elements>
+    </Soul>
+    <Soul name="WaterElement">
+      <elements>
+        <metal>0</metal>
+        <plant>0</plant>
+        <earth>0</earth>
+        <water>10</water>
+        <fire>0</fire>
+      </elements>
+    </Soul>
+    <Soul name="FireElement">
+      <elements>
+        <metal>0</metal>
+        <plant>0</plant>
+        <earth>0</earth>
+        <water>0</water>
+        <fire>10</fire>
+      </elements>
+    </Soul>
+    <Soul name="BabySpider">
+      <elements>
+        <metal>0</metal>
+        <plant>3</plant>
+        <earth>3</earth>
         <water>1</water>
         <fire>1</fire>
       </elements>
+    </Soul>
+    <Soul name="GiantSpider">
+      <elements>
+        <metal>1</metal>
+        <plant>6</plant>
+        <earth>6</earth>
+        <water>3</water>
+        <fire>3</fire>
+      </elements>
+    </Soul>
+    <Soul name="RedSpider">
+      <elements>
+        <metal>0</metal>
+        <plant>2</plant>
+        <earth>2</earth>
+        <water>0</water>
+        <fire>8</fire>
+      </elements>
+      <Soul name="GoldSpider">
+        <elements>
+          <metal>8</metal>
+          <plant>0</plant>
+          <earth>2</earth>
+          <water>2</water>
+          <fire>0</fire>
+        </elements>
+      </Soul>
+      <Soul name="RedSnake">
+        <elements>
+          <metal>0</metal>
+          <plant>1</plant>
+          <earth>4</earth>
+          <water>1</water>
+          <fire>6</fire>
+        </elements>
+      </Soul>
+      <Soul name="BlueSnake">
+        <elements>
+          <metal>1</metal>
+          <plant>4</plant>
+          <earth>1</earth>
+          <water>6</water>
+          <fire>0</fire>
+        </elements>
+      </Soul>
+      <Soul name="GreenSnake">
+        <elements>
+          <metal>0</metal>
+          <plant>6</plant>
+          <earth>4</earth>
+          <water>1</water>
+          <fire>1</fire>
+        </elements>
+      </Soul>
+      <Soul name="GoldFrog">
+        <elements>
+          <metal>5</metal>
+          <plant>1</plant>
+          <earth>5</earth>
+          <water>1</water>
+          <fire>0</fire>
+        </elements>
+      </Soul>
+      <Soul name="GreenFrog">
+        <elements>
+          <metal>0</metal>
+          <plant>5</plant>
+          <earth>1</earth>
+          <water>5</water>
+          <fire>0</fire>
+        </elements>
+      </Soul>
+      <Soul name="Cloud">
+        <elements>
+          <metal>0</metal>
+          <plant>3</plant>
+          <earth>2</earth>
+          <water>10</water>
+          <fire>0</fire>
+        </elements>
+      </Soul>
     </Soul>
   </Souls>
 </SoulCollection>
