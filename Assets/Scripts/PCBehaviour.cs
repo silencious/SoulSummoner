@@ -25,6 +25,7 @@ public class PCBehaviour : LiveBehaviour
 	float minRightPressTime = 1.0f;
 	System.Diagnostics.Stopwatch leftPressTimer;
 	System.Diagnostics.Stopwatch rightPressTimer;
+	public Vector3 focus;
 
 	protected override void Start ()
 	{
@@ -121,7 +122,8 @@ public class PCBehaviour : LiveBehaviour
 				// click to route
 				var p = MousedPoint ();
 				if((p-transform.position).magnitude<=maxRouteDis){
-					dm.RouteTo (this, p);
+					focus = p;
+					dm.ReRouteLives ();
 				}
 			}else{
 				// hold left mouse button, summon/cast
@@ -223,4 +225,5 @@ public class PCBehaviour : LiveBehaviour
 		}
 		return null;
 	}
+
 }

@@ -12,10 +12,10 @@ public class DMBehaviour : MonoBehaviour {
 	float remTime;
 
 	const string pcName = "PC";
-	GameObject pc;
+	PCBehaviour pc;
 	Transform pcTransform;
-	List<GameObject> mobs = new List<GameObject>();
-	List<GameObject> lives = new List<GameObject>();
+	Dictionary<MobBehaviour, float> mobs = new Dictionary<MobBehaviour, float>();
+	List<LiveBehaviour> lives = new List<LiveBehaviour>();
 
 	const string routeDir = "RouteMaps/";
 	RouteMap routeMap;
@@ -30,7 +30,7 @@ public class DMBehaviour : MonoBehaviour {
 		stage = data.GetStageByName (stageName);
 
 		remTime = 0;
-		pc = GameObject.Find (pcName);
+		pc = GameObject.Find (pcName).GetComponent<PCBehaviour>();
 		pcTransform = pc.transform;
 
 		//routeMap = new RouteMap(routeDir+stageName);
@@ -41,6 +41,9 @@ public class DMBehaviour : MonoBehaviour {
 		remTime += Time.deltaTime;
 		while (remTime >= stage.gapTime) {
 			remTime -= stage.gapTime;
+
+			ReRouteMobs ();
+
 			var acc = stage.baseElements * stage.gapTime * TimeFactor(stage.factor) * Random.Range (0.5f, 1.5f);
 			reserve += acc;
 			SpawnMobs ();
@@ -96,7 +99,7 @@ public class DMBehaviour : MonoBehaviour {
 			mob.soulName = soulName;
 			mob.dm = this;
 			reserve -= data.GetElementsByName (soulName);
-			mobs.Add (gameObject);
+			mobs.Add (mob, Distance (gameObject.transform, pcTransform));
 			ReRoute (mob);
 			Debug.Log ("Spawn mob:" + soulName);
 			return;
@@ -118,18 +121,10 @@ public class DMBehaviour : MonoBehaviour {
 			live.soulName = soulName;
 			live.dm = this;
 			reserve -= data.GetElementsByName (soulName);
-			lives.Add (gameObject);
+			lives.Add (live);
 			ReRoute (live);
 			Debug.Log ("Summon soul:" + soulName);
 			return;
-		}
-	}
-
-	public Vector3 PickMob (Vector3 livePos){
-		if(mobs.Count==0){
-			return pc.transform.position;
-		}else{
-			return mobs[Random.Range(0, mobs.Count)].transform.position;
 		}
 	}
 
@@ -148,17 +143,41 @@ public class DMBehaviour : MonoBehaviour {
 		if(live is MobBehaviour){
 			RouteTo (live, pcTransform.position);
 		}else{
-			RouteTo (live, PickMob (live.transform.position));
+			RouteTo (live, pc.focus);
+		}
+	}
+
+	public void ReRouteMobs(){
+		foreach(var entry in mobs){
+			var d = Distance (entry.Key.transform, pcTransform);
+			if(d>=entry.Value){
+				ReRoute (entry.Key.GetComponent<MobBehaviour> ());
+			}else{
+				mobs [entry.Key] = d;
+			}
+		}
+	}
+
+	public void ReRouteLives(){
+		foreach(var live in lives){
+			ReRoute (live);
 		}
 	}
 
 	public void Remove(GameObject obj){
 		var live = obj.GetComponent<LiveBehaviour> ();
-		if(live is MobBehaviour){
-			mobs.Remove (obj);
-		}else{
-			lives.Remove (obj);
+		if(live==null){
+			return;
 		}
+		if(live is MobBehaviour){
+			mobs.Remove (live as MobBehaviour);
+		}else{
+			lives.Remove (live);
+		}
+	}
+
+	float Distance(Transform t1, Transform t2){
+		return (t2.position - t1.position).magnitude;
 	}
 
 	void Test(){
