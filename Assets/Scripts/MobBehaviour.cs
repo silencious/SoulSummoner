@@ -25,6 +25,9 @@ public class MobBehaviour : LiveBehaviour {
 		var live = obj.GetComponent<LiveBehaviour> ();
 		if ((live != null) && !(live is MobBehaviour)) {	// not a mob, fight it
 			Fight (live);
+			if(live is PCBehaviour){
+				(live as PCBehaviour).UpdateHP ();
+			}
 		}	
 	}
 }

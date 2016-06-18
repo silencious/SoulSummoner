@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 public class Elements{
 	public enum ELEMENTS
 	{
-		METAL=0, PLANT=1, WATER=2, FIRE=3, EARTH=4
+		METAL=0, PLANT=1, EARTH=2, WATER=3, FIRE=4
 	};
 
 	[XmlElement("metal")]

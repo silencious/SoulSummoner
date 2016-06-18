@@ -27,6 +27,9 @@ public class PCBehaviour : LiveBehaviour
 	System.Diagnostics.Stopwatch rightPressTimer;
 	public Vector3 focus;
 
+	UIDisplay ui;
+	RouteMap routeMap;
+
 	protected override void Start ()
 	{
 		// init gameplay relative parameters
@@ -54,6 +57,12 @@ public class PCBehaviour : LiveBehaviour
 		leftPressTimer.Reset ();
 		rightPressTimer = System.Diagnostics.Stopwatch.StartNew();
 		rightPressTimer.Reset ();
+
+		ui = GameObject.Find ("UI").GetComponent<UIDisplay> ();
+		ui.UpdatePCElements (elements);
+		ui.UpdatePCReserve (reserve);
+		ui.UpdatePCHPCeil (hp);
+		ui.UpdatePCHP (hp);
 	}
 
 	protected override void FixedUpdate(){
@@ -62,6 +71,10 @@ public class PCBehaviour : LiveBehaviour
 			return;
 		}
 		DoRoute();
+		var routeMap = RouteMap.GetCurrentInstance ();
+		if(!routeMap.Passable(transform.position)){
+			transform.Translate(rb.velocity * (-Time.fixedDeltaTime));
+		}
 	}
 
 	protected override void OnCollisionEnter(Collision other){
@@ -74,9 +87,6 @@ public class PCBehaviour : LiveBehaviour
 	}
 
 	protected override void Update (){
-		if(hp<=0){
-			HandleDeath ();
-		}
 		MouseEvents ();
 		KeyEvents ();
 	}
@@ -170,6 +180,13 @@ public class PCBehaviour : LiveBehaviour
 		}
 	}
 
+	public void UpdateHP(){
+		ui.UpdatePCHP (hp);
+		if(hp<=0){
+			HandleDeath ();
+		}
+	}
+
 	void HandleDeath(){
 		
 	}
@@ -190,6 +207,7 @@ public class PCBehaviour : LiveBehaviour
 			// test
 			dm.Summon (candidate, transform.position+d, ref reserve);
 		}
+		ui.UpdatePCReserve (reserve);
 	}
 
 	void Absorb(){
@@ -200,7 +218,8 @@ public class PCBehaviour : LiveBehaviour
 			if (soul != null && !(soul is LiveBehaviour)) {
 				Debug.Log ("Absorb " + soul.soulName);
 				// absorb the soul: add its elements to pc's reserve, destroy soul obj
-				reserve = Elements.max (reserve + soul.elements, elements);
+				reserve = Elements.min (reserve + soul.elements, elements);
+				ui.UpdatePCReserve (reserve);
 				Destroy (soul.gameObject);
 			}
 		}

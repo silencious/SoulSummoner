@@ -34,7 +34,7 @@ public class DMBehaviour : MonoBehaviour {
 		pcTransform = pc.transform;
 
 		//routeMap = new RouteMap(routeDir+stageName);
-		routeMap = new RouteMap (routeDir + stageName);
+		routeMap = RouteMap.GetInstance(routeDir + stageName);
 	}
 
 	void Update () {

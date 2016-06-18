@@ -129,22 +129,38 @@ public class Heap<T>:List<T> where T:WayPoint{
 }
 
 public class RouteMap {
+	static Dictionary<string, RouteMap> instances = new Dictionary<string, RouteMap>();
 	Texture2D map;
 	const float scale = 1.0f;	// size of a tile
 	int width;
 	int height;
+	static string currentMapPath = "RouteMaps/Stage00.png";
 
-	public RouteMap(string mapPath){
+	private RouteMap(string mapPath){
 		map = Resources.Load (mapPath) as Texture2D;
 		Debug.Log ("Init a RouteMap of "+map.width+"*"+map.height);
 	}
 
+	public static RouteMap GetInstance(string mapPath){
+		currentMapPath = mapPath;
+		if(instances.ContainsKey(mapPath)){
+			return instances [mapPath];
+		}
+		var map = new RouteMap(mapPath);
+		instances.Add (mapPath, map);
+		return map;
+	}
+
+	public static RouteMap GetCurrentInstance(){
+		return GetInstance (currentMapPath);
+	}
+
 	// return the center coordinate in world for a given position on map
-	Vector3 Map2World(Position v){
+	public static Vector3 Map2World(Position v){
 		return new Vector3 (v.x + 0.5f, 0, v.y + 0.5f) * scale;
 	}
 	// return a position on map for a given world coordinate
-	Position World2Map(Vector3 v){
+	public static Position World2Map(Vector3 v){
 		v /= scale;
 		return new Position (v.x, v.z);
 	}
@@ -153,6 +169,9 @@ public class RouteMap {
 	}
 	bool Passable(Position p){
 		return Passable (p.x, p.y);
+	}
+	public bool Passable(Vector3 pos){
+		return Passable (World2Map (pos));
 	}
 
 	bool InRange(Vector3 world, Position map){

@@ -11,9 +11,9 @@ GameObject:
   - 33: {fileID: 3301266}
   - 135: {fileID: 13585510}
   - 23: {fileID: 2368954}
-  - 114: {fileID: 11440526}
+  - 114: {fileID: 11464574}
   m_Layer: 0
-  m_Name: Token
+  m_Name: LiveToken
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -64,7 +64,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 192808}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &11440526
+--- !u!114 &11464574
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -72,12 +72,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 192808}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3245257c2aa12a647af5c9151342b0a7, type: 3}
+  m_Script: {fileID: 11500000, guid: c854680f403a08a49a10b8e8dbcb6e4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   soulName: 
-  hp: 0
   dm: {fileID: 0}
+  hp: 0
 --- !u!135 &13585510
 SphereCollider:
   m_ObjectHideFlags: 1
