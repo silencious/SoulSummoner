@@ -1,0 +1,280 @@
+fileFormatVersion: 2
+guid: 7f1be9f944276af4ab74e51dfbb364f5
+timeCreated: 1466253641
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Bone079
+    100002: Bone080
+    100004: Bone081
+    100006: Bone082
+    100008: Bone083
+    100010: Bone090
+    100012: Bone091
+    100014: Bone092
+    100016: Bone093
+    100018: Bone094
+    100020: Bone095
+    100022: Bone096
+    100024: Bone097
+    100026: Bone098
+    100028: Bone099
+    100030: Bone100
+    100032: Bone101
+    100034: Bone102
+    100036: Bone103
+    100038: Bone104
+    100040: Bone105
+    100042: Bone106
+    100044: Bone107
+    100046: Bone108
+    100048: Bone109
+    100050: Bone110
+    100052: Bone112
+    100054: Bone113
+    100056: Bone114
+    100058: Bone115
+    100060: Bone116
+    100062: Bone117
+    100064: Bone118
+    100066: Bone119
+    100068: Bone120
+    100070: Bone125
+    100072: Bone127
+    100074: Bone128
+    100076: Bone129
+    100078: Bone130
+    100080: Bone132
+    100082: Bone133
+    100084: Bone134
+    100086: Bone135
+    100088: Bone136
+    100090: Bone137
+    100092: Bone138
+    100094: Bone139
+    100096: Bone146
+    100098: Bone147
+    100100: Bone148
+    100102: Bone149
+    100104: Bone150
+    100106: Bone151
+    100108: Bone152
+    100110: Bone153
+    100112: Bone154
+    100114: Bone155
+    100116: Bone156
+    100118: Bone157
+    100120: IK Chain001
+    100122: IK Chain002
+    100124: IK Chain003
+    100126: IK Chain004
+    100128: IK Chain006
+    100130: IK Chain007
+    100132: IK Chain008
+    100134: IK Chain009
+    100136: IK Chain010
+    100138: IK Chain011
+    100140: IK Chain012
+    100142: IK Chain013
+    100144: IK Chain014
+    100146: IK Chain018
+    100148: IK Chain019
+    100150: IK Chain021
+    100152: IK Chain022
+    100154: IK Chain023
+    100156: IK Chain024
+    100158: IK Chain025
+    100160: IK Chain026
+    100162: IK Chain027
+    100164: IK Chain028
+    100166: IK Chain029
+    100168: IK Chain031
+    100170: IK Chain032
+    100172: OilTank001
+    100174: Omni001
+    100176: Plane001
+    100178: Sky001
+    100180: Sphere001
+    100182: Sphere002
+    100184: Sphere003
+    100186: Sphere004
+    100188: //RootNode
+    400000: Bone079
+    400002: Bone080
+    400004: Bone081
+    400006: Bone082
+    400008: Bone083
+    400010: Bone090
+    400012: Bone091
+    400014: Bone092
+    400016: Bone093
+    400018: Bone094
+    400020: Bone095
+    400022: Bone096
+    400024: Bone097
+    400026: Bone098
+    400028: Bone099
+    400030: Bone100
+    400032: Bone101
+    400034: Bone102
+    400036: Bone103
+    400038: Bone104
+    400040: Bone105
+    400042: Bone106
+    400044: Bone107
+    400046: Bone108
+    400048: Bone109
+    400050: Bone110
+    400052: Bone112
+    400054: Bone113
+    400056: Bone114
+    400058: Bone115
+    400060: Bone116
+    400062: Bone117
+    400064: Bone118
+    400066: Bone119
+    400068: Bone120
+    400070: Bone125
+    400072: Bone127
+    400074: Bone128
+    400076: Bone129
+    400078: Bone130
+    400080: Bone132
+    400082: Bone133
+    400084: Bone134
+    400086: Bone135
+    400088: Bone136
+    400090: Bone137
+    400092: Bone138
+    400094: Bone139
+    400096: Bone146
+    400098: Bone147
+    400100: Bone148
+    400102: Bone149
+    400104: Bone150
+    400106: Bone151
+    400108: Bone152
+    400110: Bone153
+    400112: Bone154
+    400114: Bone155
+    400116: Bone156
+    400118: Bone157
+    400120: IK Chain001
+    400122: IK Chain002
+    400124: IK Chain003
+    400126: IK Chain004
+    400128: IK Chain006
+    400130: IK Chain007
+    400132: IK Chain008
+    400134: IK Chain009
+    400136: IK Chain010
+    400138: IK Chain011
+    400140: IK Chain012
+    400142: IK Chain013
+    400144: IK Chain014
+    400146: IK Chain018
+    400148: IK Chain019
+    400150: IK Chain021
+    400152: IK Chain022
+    400154: IK Chain023
+    400156: IK Chain024
+    400158: IK Chain025
+    400160: IK Chain026
+    400162: IK Chain027
+    400164: IK Chain028
+    400166: IK Chain029
+    400168: IK Chain031
+    400170: IK Chain032
+    400172: OilTank001
+    400174: Omni001
+    400176: Plane001
+    400178: Sky001
+    400180: Sphere001
+    400182: Sphere002
+    400184: Sphere003
+    400186: Sphere004
+    400188: //RootNode
+    2300000: Plane001
+    2300002: Sphere001
+    2300004: Sphere002
+    2300006: Sphere003
+    2300008: Sphere004
+    3300000: Plane001
+    3300002: Sphere001
+    3300004: Sphere002
+    3300006: Sphere003
+    3300008: Sphere004
+    4300000: OilTank001
+    4300002: Sphere001
+    4300004: Sphere003
+    4300006: Sphere004
+    4300008: Sphere002
+    4300010: Plane001
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: OilTank001
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
