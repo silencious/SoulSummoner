@@ -29,6 +29,11 @@ public class PCBehaviour : LiveBehaviour
 
 	UIDisplay ui;
 	RouteMap routeMap;
+	AudioSource musicSource;
+	AudioSource soundSource;
+	AudioClip bgm;
+	AudioClip absorbClip;
+	AudioClip summonClip;
 
 	protected override void Start ()
 	{
@@ -63,6 +68,12 @@ public class PCBehaviour : LiveBehaviour
 		ui.UpdatePCReserve (reserve);
 		ui.UpdatePCHPCeil (hp);
 		ui.UpdatePCHP (hp);
+
+		musicSource = transform.Find ("MusicSource").GetComponent<AudioSource> ();
+		soundSource = transform.Find ("SoundSource").GetComponent<AudioSource> ();
+		absorbClip = Resources.Load ("Sound/Absorb") as AudioClip;
+		summonClip = Resources.Load("Sound/Summon") as AudioClip;
+		SetMusic (bgm);
 	}
 
 	protected override void FixedUpdate(){
@@ -137,7 +148,7 @@ public class PCBehaviour : LiveBehaviour
 				}
 			}else{
 				// hold left mouse button, summon/cast
-				Cast ();				
+				Summon ();				
 			}
 			leftPressTimer.Reset();
 		}
@@ -195,19 +206,21 @@ public class PCBehaviour : LiveBehaviour
 		return "LiveToken";
 	}
 
-	void Cast(){
+	void Summon(){
 		Ray ray = currentCamera.ScreenPointToRay (Input.mousePosition);
 		var d = ray.direction;
 		d.y = 0.0f;
 		d = d.normalized * castDistance;
 		var candidate = GetCurrentCandidate ();
 		if(reserve.over(data.GetElementsByName(candidate))){
+			PlaySound (summonClip);
 			dm.Summon (candidate, transform.position+d, ref reserve);
+			ui.UpdatePCReserve (reserve);
 		}else{
 			// test
+			PlaySound (summonClip);
 			dm.Summon (candidate, transform.position+d, ref reserve);
 		}
-		ui.UpdatePCReserve (reserve);
 	}
 
 	void Absorb(){
@@ -216,12 +229,27 @@ public class PCBehaviour : LiveBehaviour
 			var soul = obj.GetComponent<SoulBehaviour> ();
 			// only non-live soul can be absorbed
 			if (soul != null && !(soul is LiveBehaviour)) {
-				Debug.Log ("Absorb " + soul.soulName);
+				//Debug.Log ("Absorb " + soul.soulName);
 				// absorb the soul: add its elements to pc's reserve, destroy soul obj
+				PlaySound (absorbClip);
 				reserve = Elements.min (reserve + soul.elements, elements);
 				ui.UpdatePCReserve (reserve);
 				Destroy (soul.gameObject);
 			}
+		}
+	}
+
+	void PlaySound(AudioClip clip){
+		soundSource.clip = clip;
+		soundSource.Play ();
+	}
+
+	public void SetMusic(AudioClip clip){
+		bgm = clip;
+		if(bgm!=null && musicSource!=null){
+			musicSource.loop = true;
+			musicSource.clip = bgm;
+			musicSource.Play ();
 		}
 	}
 

@@ -26,13 +26,13 @@ public class LiveBehaviour : SoulBehaviour {
 	// Update is called once per frame
 	protected override void Update () {
 		if(hp<=0){
+			Debug.Log (soulName + ": hp <= 0, destroy");
 			Destroy (gameObject);
 		}
 	}
 
 	void OnDestroy(){
-		Debug.Log (soulName + ": hp <= 0, destroy");
-		dm.Remove (gameObject);
+		dm.Remove (this);
 	}
 
 	protected void DoRoute(){

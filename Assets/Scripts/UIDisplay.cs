@@ -4,23 +4,24 @@ using System.Collections;
 
 public class UIDisplay : MonoBehaviour {
 	public Transform elementChart;
-	public Elements pcElements;
-	public Elements pcReserve;
+	public Elements pcElements = Elements.one;
+	public Elements pcReserve = Elements.zero;
 	public Transform healthPie;
-	public float pcHPCeil;
-	public float pcHP;
+	public float pcHPCeil = 1;
+	public float pcHP = 1;
+
+	public Texture2D cursorTexture;
 
 	// Use this for initialization
 	void Start () {
 		elementChart = transform.Find ("ElementChart");
-		pcElements = Elements.one;
-		pcReserve = Elements.zero;
 		UpdateElementChart ();
 
 		healthPie = transform.Find ("HealthPie");
-		pcHPCeil = 1;
-		pcHP = 1;
-		UpdateHealthPie ();
+		UpdateHealthPie ();	
+
+		cursorTexture = Resources.Load ("UI/Cursor") as Texture2D;
+		Cursor.SetCursor (cursorTexture, Vector2.zero, CursorMode.Auto);
 	}
 	
 	// Update is called once per frame
@@ -39,6 +40,10 @@ public class UIDisplay : MonoBehaviour {
 	}
 
 	void UpdateElementChart(){
+		if(elementChart==null){
+			elementChart = transform.Find ("ElementChart");
+		}
+
 		elementChart.Find ("Metal").transform.localScale = Vector3.one * pcReserve.metal / pcElements.metal;
 		elementChart.Find ("MetalValue").GetComponent<Text> ().text = Mathf.FloorToInt (pcReserve.metal).ToString();
 		elementChart.Find ("Plant").transform.localScale = Vector3.one * pcReserve.plant / pcElements.plant;
@@ -58,10 +63,13 @@ public class UIDisplay : MonoBehaviour {
 
 	public void UpdatePCHP(float hp){
 		pcHP = Mathf.Min(hp, pcHPCeil);
-		UpdateHealthPie ();	
+		UpdateHealthPie ();
 	}
 
 	void UpdateHealthPie(){
+		if(healthPie==null){
+			healthPie = transform.Find ("HealthPie");
+		}
 		healthPie.Find ("HP").transform.localScale = Vector3.one * pcHP / pcHPCeil;
 		healthPie.Find ("HPValue").GetComponent<Text> ().text = Mathf.FloorToInt (pcHP).ToString ();
 	}

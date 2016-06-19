@@ -32,6 +32,7 @@ public class DMBehaviour : MonoBehaviour {
 		remTime = 0;
 		pc = GameObject.Find (pcName).GetComponent<PCBehaviour>();
 		pcTransform = pc.transform;
+		pc.SetMusic (Resources.Load("Music/"+stageName) as AudioClip);
 
 		//routeMap = new RouteMap(routeDir+stageName);
 		routeMap = RouteMap.GetInstance(routeDir + stageName);
@@ -120,7 +121,7 @@ public class DMBehaviour : MonoBehaviour {
 		if(live!=null){
 			live.soulName = soulName;
 			live.dm = this;
-			reserve -= data.GetElementsByName (soulName);
+			reserve = Elements.min(Elements.zero, reserve - data.GetElementsByName (soulName));
 			lives.Add (live);
 			ReRoute (live);
 			Debug.Log ("Summon soul:" + soulName);
@@ -143,18 +144,26 @@ public class DMBehaviour : MonoBehaviour {
 		if(live is MobBehaviour){
 			RouteTo (live, pcTransform.position);
 		}else{
-			RouteTo (live, pc.focus);
+			if(pc.focus.Equals(Vector3.zero)){
+				RouteTo (live, pc.transform.position);
+			}else{
+				RouteTo (live, pc.focus);				
+			}
 		}
 	}
 
 	public void ReRouteMobs(){
+		var updates = new Dictionary<MobBehaviour, float> ();
 		foreach(var entry in mobs){
 			var d = Distance (entry.Key.transform, pcTransform);
 			if(d>=entry.Value){
 				ReRoute (entry.Key.GetComponent<MobBehaviour> ());
 			}else{
-				mobs [entry.Key] = d;
+				updates.Add (entry.Key, d);
 			}
+		}
+		foreach(var entry in updates){
+			mobs [entry.Key] = entry.Value;
 		}
 	}
 
@@ -164,8 +173,7 @@ public class DMBehaviour : MonoBehaviour {
 		}
 	}
 
-	public void Remove(GameObject obj){
-		var live = obj.GetComponent<LiveBehaviour> ();
+	public void Remove(LiveBehaviour live){
 		if(live==null){
 			return;
 		}
