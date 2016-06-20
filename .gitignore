@@ -2,7 +2,7 @@
 # Customized #
 # ========== #
 Build/
-
+*.pdb
 
 # Unity generated #
 # =============== #

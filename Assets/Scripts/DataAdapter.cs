@@ -107,22 +107,52 @@ public class StageContainer{
 	}
 }
 
+[XmlRoot("SaveInfo")]
+public class SaveInfo{
+	[XmlElement("StageName")]
+	public string stageName;	
+
+	public static SaveInfo Load(string path){
+		var serializer = new XmlSerializer (typeof(SaveInfo));
+		using(var stream = new FileStream (path, FileMode.OpenOrCreate, FileAccess.ReadWrite)){
+			return serializer.Deserialize (stream) as SaveInfo;
+		}
+	}
+
+	public void Save(string path){
+		Debug.Log ("Save stage: " + stageName);
+		var serializer = new XmlSerializer (typeof(SaveInfo));
+		using(var stream = new FileStream (path, FileMode.OpenOrCreate, FileAccess.ReadWrite)){
+			serializer.Serialize(stream, this);
+		}
+	}
+}
+
 public class DataAdapter {
 	static DataAdapter instance;
-	const string soulPath = "Assets/Data/SoulElements.xml";
-	const string stagePath = "Assets/Data/Stages.xml";
+	string soulPath;
+	string stagePath;
+	string savePath;
 	Dictionary<string, Soul> soulDict;	// dictionary takes soul name and return element data
 	Dictionary<string, Stage> stageDict;
+	SaveInfo saveInfo;
 
 	private DataAdapter(){
 		/*var container = new SoulContainer ();
 		container.souls.Add (new Soul ("slime", Elements.one));
 		container.Save (soulPath);*/
 		// init eDic
+
+		soulPath = Application.streamingAssetsPath + "/SoulElements.xml";
 		var soulContainer = SoulContainer.Load (soulPath);
 		soulDict = soulContainer.ToDict ();
+
+		stagePath = Application.streamingAssetsPath + "/Stages.xml";
 		var stageContainer = StageContainer.Load (stagePath);
 		stageDict = stageContainer.ToDict ();
+
+		savePath = Application.streamingAssetsPath + "/Save.xml";
+		saveInfo = SaveInfo.Load (savePath);
 	}
 
 	public static DataAdapter GetInstance(){
@@ -169,7 +199,12 @@ public class DataAdapter {
 		return stage;		
 	}
 
+	public SaveInfo GetSaveInfo(){
+		return saveInfo;
+	}
+
 	void Test(){
+		/*
 		var stageContainer = StageContainer.Load (stagePath);
 		var s = Stage.empty;
 		s.mobs.Add ("Token");
@@ -178,5 +213,6 @@ public class DataAdapter {
 		s.spawnPoints.Add (Vector3.one);
 		stageContainer.stages.Add (s);
 		stageContainer.Save (stagePath);
+		*/
 	}
 }

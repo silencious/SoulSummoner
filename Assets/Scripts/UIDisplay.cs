@@ -1,8 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class UIDisplay : MonoBehaviour {
+	DataAdapter data;
+	string mainSceneName = "Main";
+
 	public Transform elementChart;
 	public Elements pcElements = Elements.one;
 	public Elements pcReserve = Elements.zero;
@@ -14,19 +18,26 @@ public class UIDisplay : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		elementChart = transform.Find ("ElementChart");
-		UpdateElementChart ();
+		data = DataAdapter.GetInstance ();
+		if(SceneManager.GetActiveScene().name.Equals(mainSceneName)){
+			
+		}else{
+			elementChart = transform.Find ("ElementChart");
+			UpdateElementChart ();
 
-		healthPie = transform.Find ("HealthPie");
-		UpdateHealthPie ();	
+			healthPie = transform.Find ("HealthPie");
+			UpdateHealthPie ();	
 
-		cursorTexture = Resources.Load ("UI/Cursor") as Texture2D;
-		Cursor.SetCursor (cursorTexture, Vector2.zero, CursorMode.Auto);
+			cursorTexture = Resources.Load ("UI/Cursor") as Texture2D;
+			Cursor.SetCursor (cursorTexture, Vector2.zero, CursorMode.Auto);			
+		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if(Input.GetKey(KeyCode.Escape)){
+			
+		}
 	}
 
 	public void UpdatePCElements(Elements elements){
@@ -72,5 +83,23 @@ public class UIDisplay : MonoBehaviour {
 		}
 		healthPie.Find ("HP").transform.localScale = Vector3.one * pcHP / pcHPCeil;
 		healthPie.Find ("HPValue").GetComponent<Text> ().text = Mathf.FloorToInt (pcHP).ToString ();
+	}
+
+
+
+	public void StartGame(){
+		SceneManager.LoadScene ("Stage01");
+	}
+
+	public void ContinueGame(){
+		var stageName = data.GetSaveInfo().stageName;
+		if(stageName==null||stageName.Equals("")){
+			StartGame ();
+		}
+		SceneManager.LoadScene (stageName);
+	}
+
+	public void ExitGame(){
+		Application.Quit ();
 	}
 }

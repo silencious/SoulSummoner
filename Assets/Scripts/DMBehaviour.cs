@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -22,7 +22,7 @@ public class DMBehaviour : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		stageName = EditorSceneManager.GetActiveScene ().name;
+		stageName = SceneManager.GetActiveScene ().name;
 		Debug.Log (stageName + " DM starts");
 		reserve = Elements.zero;
 
