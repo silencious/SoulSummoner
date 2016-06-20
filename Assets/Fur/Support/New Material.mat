@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: SpiderFurBlack
-  m_Shader: {fileID: 4800000, guid: 267b2a15fb1fec842b15363a683ccf1e, type: 3}
+  m_Name: New Material
+  m_Shader: {fileID: 4800000, guid: 709411c076ec94df2a95a346ae4b7640, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 5
   m_CustomRenderQueue: 3000
@@ -90,7 +90,7 @@ Material:
       data:
         first:
           name: _Cutoff
-        second: 1
+        second: 0.5
       data:
         first:
           name: _ZWrite
@@ -134,7 +134,7 @@ Material:
       data:
         first:
           name: _EdgeFade
-        second: 1
+        second: 0.4
     m_Colors:
       data:
         first:
@@ -147,7 +147,7 @@ Material:
       data:
         first:
           name: _LightDirection0
-        second: {r: 0, g: 0, b: -1, a: 0}
+        second: {r: 1, g: 0, b: 0, a: 1}
       data:
         first:
           name: _MyLightColor0
