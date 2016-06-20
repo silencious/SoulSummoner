@@ -129,30 +129,40 @@ public class Heap<T>:List<T> where T:WayPoint{
 }
 
 public class RouteMap {
-	static Dictionary<string, RouteMap> instances = new Dictionary<string, RouteMap>();
-	Texture2D map;
-	const float scale = 1.0f;	// size of a tile
-	int width;
-	int height;
+	static RouteMap instance;
+	static Dictionary<string, Texture2D> maps = new Dictionary<string, Texture2D>();
 	static string currentMapPath = "RouteMaps/Stage00.png";
+	static Texture2D currentMap = Resources.Load(currentMapPath) as Texture2D;
+	static float scale = 1.0f;	// size of a tile
+	static int width;
+	static int height;
 
-	private RouteMap(string mapPath){
-		map = Resources.Load (mapPath) as Texture2D;
-		Debug.Log ("Init a RouteMap of "+map.width+"*"+map.height);
+	private RouteMap(){
+		
 	}
 
-	public static RouteMap GetInstance(string mapPath){
-		currentMapPath = mapPath;
-		if(instances.ContainsKey(mapPath)){
-			return instances [mapPath];
+	public static RouteMap GetInstance(){
+		if(instance==null){
+			instance = new RouteMap ();
 		}
-		var map = new RouteMap(mapPath);
-		instances.Add (mapPath, map);
-		return map;
+		return instance;
 	}
 
-	public static RouteMap GetCurrentInstance(){
-		return GetInstance (currentMapPath);
+	public static void SetCurrentMap(string path){
+		if(!maps.ContainsKey(path)){
+			maps.Add (path, Resources.Load (path) as Texture2D);
+		}
+		currentMapPath = path;
+		currentMap = maps [path];
+		width = currentMap.width;
+		height = currentMap.height;
+	}
+
+	static Texture2D GetMap (string mapPath){
+		if(!maps.ContainsKey(mapPath)){
+			maps.Add (mapPath, Resources.Load (mapPath) as Texture2D);
+		}
+		return maps [mapPath];
 	}
 
 	// return the center coordinate in world for a given position on map
@@ -164,27 +174,27 @@ public class RouteMap {
 		v /= scale;
 		return new Position (v.x, v.z);
 	}
-	bool Passable(int x, int y){
-		return map.GetPixel (x, y).Equals (Color.white);
+	static bool Passable(int x, int y){
+		return currentMap.GetPixel (x, y).Equals (Color.white);
 	}
-	bool Passable(Position p){
+	static bool Passable(Position p){
 		return Passable (p.x, p.y);
 	}
-	public bool Passable(Vector3 pos){
+	static public bool Passable(Vector3 pos){
 		return Passable (World2Map (pos));
 	}
 
-	bool InRange(Vector3 world, Position map){
+	static bool InRange(Vector3 world, Position map){
 		return World2Map (world).Equals(map);
 	}
 
-	void AddNewPos(List<Position> list, Position pos, HashSet<Position> closeSet){
+	static void AddNewPos(List<Position> list, Position pos, HashSet<Position> closeSet){
 		if(Passable(pos) && !closeSet.Contains(pos)){
 			list.Add (pos);
 		}
 	}
 
-	List<Position> Neighbors(Position pos, HashSet<Position> closeSet){
+	static List<Position> Neighbors(Position pos, HashSet<Position> closeSet){
 		var ret = new List<Position> ();
 		int x = pos.x, y = pos.y;
 		if(x>0){
@@ -192,22 +202,22 @@ public class RouteMap {
 			if(y>0){
 				AddNewPos (ret, new Position (x - 1, y - 1), closeSet);
 			}
-			if(y<map.height-1){
+			if(y<currentMap.height-1){
 				AddNewPos (ret, new Position (x - 1, y + 1), closeSet);
 			}
 		}
 		if(y>0){
 			AddNewPos (ret, new Position (x, y - 1), closeSet);			
 		}
-		if(y<map.height-1){
+		if(y<currentMap.height-1){
 			AddNewPos (ret, new Position (x, y + 1), closeSet);			
 		}
-		if(x<map.width-1){
+		if(x<currentMap.width-1){
 			AddNewPos (ret, new Position (x + 1, y), closeSet);
 			if(y>0){
 				AddNewPos (ret, new Position (x + 1, y - 1), closeSet);
 			}
-			if(y<map.height-1){
+			if(y<currentMap.height-1){
 				AddNewPos (ret, new Position (x + 1, y + 1), closeSet);
 			}
 			
@@ -217,7 +227,7 @@ public class RouteMap {
 
 	// use A* algoritm to find the path from src to dst, return in world coordinate
 	// return empty list if src==dst or no path is found
-	public LinkedList<Vector3> Path(Position src, Position dst){
+	public static LinkedList<Vector3> Path(Position src, Position dst){
 		var ret = new LinkedList<Vector3> ();
 		if(src.Equals(dst) || !Passable(dst)){
 			return ret;
@@ -270,7 +280,7 @@ public class RouteMap {
 		return ret;
 	}
 
-	public LinkedList<Vector3> Path(Vector3 src, Vector3 dst){
+	public static LinkedList<Vector3> Path(Vector3 src, Vector3 dst){
 		return Path (World2Map (src), World2Map (dst));
 	}
 }

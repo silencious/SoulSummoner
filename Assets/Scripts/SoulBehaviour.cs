@@ -12,6 +12,9 @@ public class SoulBehaviour : MonoBehaviour {
 	protected virtual void Start () {
 		// init parameters
 		data = DataAdapter.GetInstance ();
+		if(soulName==null || soulName.Equals("")){
+			soulName = gameObject.name;			
+		}
 		elements = data.GetElementsByName (soulName);
 		Debug.Log (soulName+": "+elements);
 	}

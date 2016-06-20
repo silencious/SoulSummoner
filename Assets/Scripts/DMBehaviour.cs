@@ -18,7 +18,6 @@ public class DMBehaviour : MonoBehaviour {
 	List<LiveBehaviour> lives = new List<LiveBehaviour>();
 
 	const string routeDir = "RouteMaps/";
-	RouteMap routeMap;
 
 	// Use this for initialization
 	void Start () {
@@ -35,7 +34,7 @@ public class DMBehaviour : MonoBehaviour {
 		pc.SetMusic (Resources.Load("Music/"+stageName) as AudioClip);
 
 		//routeMap = new RouteMap(routeDir+stageName);
-		routeMap = RouteMap.GetInstance(routeDir + stageName);
+		RouteMap.SetCurrentMap(routeDir + stageName);
 	}
 
 	void Update () {
@@ -131,7 +130,7 @@ public class DMBehaviour : MonoBehaviour {
 
 	public void RouteTo(LiveBehaviour live, Vector3 pos){
 		//Debug.Log ("Route from " + live.transform.position + " to " + pos);
-		var path = routeMap.Path (live.transform.position, pos);
+		var path = RouteMap.Path (live.transform.position, pos);
 		if(path.Count==0){
 			path.AddLast (pos);
 		}else{
@@ -188,11 +187,4 @@ public class DMBehaviour : MonoBehaviour {
 		return (t2.position - t1.position).magnitude;
 	}
 
-	void Test(){
-		if(Input.GetMouseButtonDown(0)){
-			var t = System.Diagnostics.Stopwatch.StartNew ();
-			var path = routeMap.Path (new Position (0, 0), new Position (220, 220));
-			Debug.Log ("step="+path.Count+" time="+t.Elapsed.TotalSeconds);
-		}
-	}
 }

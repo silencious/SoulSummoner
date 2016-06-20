@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityStandardAssets.Characters.FirstPerson;
 
 public class UIDisplay : MonoBehaviour {
 	DataAdapter data;
@@ -14,7 +15,10 @@ public class UIDisplay : MonoBehaviour {
 	public float pcHPCeil = 1;
 	public float pcHP = 1;
 
-	public Texture2D cursorTexture;
+	public GameObject pauseMenu;
+	public GameObject pc;
+
+	//public Texture2D cursorTexture;
 
 	// Use this for initialization
 	void Start () {
@@ -28,15 +32,23 @@ public class UIDisplay : MonoBehaviour {
 			healthPie = transform.Find ("HealthPie");
 			UpdateHealthPie ();	
 
-			cursorTexture = Resources.Load ("UI/Cursor") as Texture2D;
-			Cursor.SetCursor (cursorTexture, Vector2.zero, CursorMode.Auto);			
+			pauseMenu = transform.Find ("PauseMenu").gameObject;
+			pauseMenu.SetActive (false);
+
+			pc = GameObject.Find ("PC");
+/*			cursorTexture = Resources.Load ("UI/Cursor") as Texture2D;
+			Cursor.SetCursor (cursorTexture, Vector2.zero, CursorMode.Auto);*/			
 		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if(Input.GetKey(KeyCode.Escape)){
-			
+			if(pauseMenu.activeSelf){
+				Resume ();
+			}else{
+				Pause ();
+			}
 		}
 	}
 
@@ -81,7 +93,7 @@ public class UIDisplay : MonoBehaviour {
 		if(healthPie==null){
 			healthPie = transform.Find ("HealthPie");
 		}
-		healthPie.Find ("HP").transform.localScale = Vector3.one * pcHP / pcHPCeil;
+		healthPie.Find ("HP").localScale = Vector3.one * pcHP / pcHPCeil;
 		healthPie.Find ("HPValue").GetComponent<Text> ().text = Mathf.FloorToInt (pcHP).ToString ();
 	}
 
@@ -101,5 +113,31 @@ public class UIDisplay : MonoBehaviour {
 
 	public void ExitGame(){
 		Application.Quit ();
+	}
+
+	public void Pause(){
+		Debug.Log ("Pause");
+		pauseMenu.SetActive (true);
+		pc.GetComponent<RigidbodyFirstPersonController> ().enabled = false;
+	}
+
+	public void Resume(){
+		Debug.Log ("Resume");
+		pauseMenu.SetActive (false);
+		pc.GetComponent<RigidbodyFirstPersonController> ().enabled = true;
+	}
+
+	public void ReturnToMain(){
+		SceneManager.LoadScene ("Main");
+	}
+
+	public void ClearStage(){
+		// show clear stage view
+
+		LoadNextStage ();
+	}
+
+	public void LoadNextStage(){
+		var currentScene = SceneManager.GetActiveScene ().name;
 	}
 }

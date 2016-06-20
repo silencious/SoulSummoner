@@ -28,12 +28,13 @@ public class PCBehaviour : LiveBehaviour
 	public Vector3 focus;
 
 	UIDisplay ui;
-	RouteMap routeMap;
 	AudioSource musicSource;
 	AudioSource soundSource;
 	AudioClip bgm;
 	AudioClip absorbClip;
 	AudioClip summonClip;
+
+	Vector3 lastPosition;
 
 	protected override void Start ()
 	{
@@ -41,6 +42,9 @@ public class PCBehaviour : LiveBehaviour
 		soulName = "PC";
 		base.Start ();
 		reserve = Elements.zero;	// empty initial element reserve
+		if(dm==null){
+			dm = GameObject.Find ("DM").GetComponent<DMBehaviour> ();
+		}
 
 		// init moving parameters
 		anim = GetComponent<Animator> ();
@@ -78,14 +82,20 @@ public class PCBehaviour : LiveBehaviour
 
 	protected override void FixedUpdate(){
 		//HandleMove ();
+		if(!RouteMap.Passable(transform.position)){
+			//Debug.Log ("Not passable, "+rb.velocity.magnitude);
+/*			var v = rb.velocity;
+			v.y = 0;
+			
+			transform.Translate(v.normalized*(-1));*/
+			transform.position = lastPosition;
+		}else{
+			lastPosition = transform.position;
+		}
 		if(waypoints==null || waypoints.Count==0){
 			return;
 		}
 		DoRoute();
-		var routeMap = RouteMap.GetCurrentInstance ();
-		if(!routeMap.Passable(transform.position)){
-			transform.Translate(rb.velocity * (-Time.fixedDeltaTime));
-		}
 	}
 
 	protected override void OnCollisionEnter(Collision other){
