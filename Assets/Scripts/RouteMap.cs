@@ -131,7 +131,7 @@ public class Heap<T>:List<T> where T:WayPoint{
 public class RouteMap {
 	static RouteMap instance;
 	static Dictionary<string, Texture2D> maps = new Dictionary<string, Texture2D>();
-	static string currentMapPath = "RouteMaps/Stage00.png";
+	static string currentMapPath = "RouteMaps/Stage01.png";
 	static Texture2D currentMap = Resources.Load(currentMapPath) as Texture2D;
 	static float scale = 1.0f;	// size of a tile
 	static int width;

@@ -18,7 +18,7 @@ public class PCBehaviour : LiveBehaviour
 	// gameplay relative
 	Elements reserve;		// elements the PC has collected
 	float castDistance = 2.0f;
-	float maxClickDistance = 10.0f;
+	float maxClickDistance = 20.0f;
 	float minMoveSpeed = 0.1f;
 
 	float minLeftPressTime = 1.0f;
@@ -112,6 +112,10 @@ public class PCBehaviour : LiveBehaviour
 		KeyEvents ();
 	}
 
+	protected override void OnDestroy(){
+		ui.GameOver ();
+	}
+
 	void HandleMove(){
 		float vertical = Input.GetAxis ("Vertical");
 		float horizontal = Input.GetAxis ("Horizontal");
@@ -201,19 +205,14 @@ public class PCBehaviour : LiveBehaviour
 		}
 	}
 
-	public void UpdateHP(){
-		ui.UpdatePCHP (hp);
-		if(hp<=0){
-			HandleDeath ();
-		}
-	}
-
-	void HandleDeath(){
-		
-	}
 
 	string GetCurrentCandidate(){
-		return "LiveToken";
+		var r = Random.Range (0, 2);
+		if(r==0){
+			return "Butterfly";
+		}else{
+			return "Dragon";
+		}
 	}
 
 	void Summon(){
@@ -228,8 +227,8 @@ public class PCBehaviour : LiveBehaviour
 			ui.UpdatePCReserve (reserve);
 		}else{
 			// test
-			PlaySound (summonClip);
-			dm.Summon (candidate, transform.position+d, ref reserve);
+			//PlaySound (summonClip);
+			//dm.Summon (candidate, transform.position+d, ref reserve);
 		}
 	}
 
@@ -239,10 +238,11 @@ public class PCBehaviour : LiveBehaviour
 			var soul = obj.GetComponent<SoulBehaviour> ();
 			// only non-live soul can be absorbed
 			if (soul != null && !(soul is LiveBehaviour)) {
-				//Debug.Log ("Absorb " + soul.soulName);
+				//Debug.Log ("Absorb " + soul.soulName + soul.elements);
 				// absorb the soul: add its elements to pc's reserve, destroy soul obj
 				PlaySound (absorbClip);
 				reserve = Elements.min (reserve + soul.elements, elements);
+				//Debug.Log ("Reserve: " + reserve);
 				ui.UpdatePCReserve (reserve);
 				Destroy (soul.gameObject);
 			}
@@ -281,6 +281,10 @@ public class PCBehaviour : LiveBehaviour
 			}
 		}
 		return null;
+	}
+
+	public void UpdateHP(){
+		ui.UpdatePCHP (hp);
 	}
 
 }

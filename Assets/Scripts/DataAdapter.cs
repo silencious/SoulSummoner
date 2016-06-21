@@ -27,17 +27,17 @@ public class SoulContainer{
 
 	public static SoulContainer Load(string path){
 		var serializer = new XmlSerializer (typeof(SoulContainer));
-		using(var stream = new FileStream (path, FileMode.OpenOrCreate, FileAccess.ReadWrite)){
-			return serializer.Deserialize (stream) as SoulContainer;
-		}
+		var file = Resources.Load<TextAsset>(path);
+		var reader = new StringReader (file.text);
+		return serializer.Deserialize (reader) as SoulContainer;
 	}
 
 	public void Save(string path){
 		Debug.Log ("Save " + souls.Count + "souls");
-		var serializer = new XmlSerializer (typeof(SoulContainer));
-		using(var stream = new FileStream (path, FileMode.OpenOrCreate, FileAccess.ReadWrite)){
-			serializer.Serialize(stream, this);
-		}
+		/*/var serializer = new XmlSerializer (typeof(SoulContainer));
+		var writer = new StringWriter ();
+		serializer.Serialize (writer, this);
+		writer.*/
 	}
 
 	public Dictionary<string, Soul> ToDict (){
@@ -85,17 +85,16 @@ public class StageContainer{
 
 	public static StageContainer Load(string path){
 		var serializer = new XmlSerializer (typeof(StageContainer));
-		using(var stream = new FileStream (path, FileMode.OpenOrCreate, FileAccess.ReadWrite)){
-			return serializer.Deserialize (stream) as StageContainer;
-		}
+		var file = Resources.Load<TextAsset>(path);
+		var reader = new StringReader (file.text);
+		return serializer.Deserialize (reader) as StageContainer;
 	}
 
 	public void Save(string path){
 		Debug.Log ("Save " + stages.Count + "stages");
-		var serializer = new XmlSerializer (typeof(StageContainer));
-		using(var stream = new FileStream (path, FileMode.OpenOrCreate, FileAccess.ReadWrite)){
-			serializer.Serialize(stream, this);
-		}
+/*		var serializer = new XmlSerializer (typeof(StageContainer));
+		var writer = new StringWriter (path);
+		serializer.Serialize (writer, this);*/
 	}
 
 	public Dictionary<string, Stage> ToDict (){
@@ -114,17 +113,16 @@ public class SaveInfo{
 
 	public static SaveInfo Load(string path){
 		var serializer = new XmlSerializer (typeof(SaveInfo));
-		using(var stream = new FileStream (path, FileMode.OpenOrCreate, FileAccess.ReadWrite)){
-			return serializer.Deserialize (stream) as SaveInfo;
-		}
+		var file = Resources.Load<TextAsset>(path);
+		var reader = new StringReader (file.text);
+		return serializer.Deserialize (reader) as SaveInfo;
 	}
 
 	public void Save(string path){
 		Debug.Log ("Save stage: " + stageName);
-		var serializer = new XmlSerializer (typeof(SaveInfo));
-		using(var stream = new FileStream (path, FileMode.OpenOrCreate, FileAccess.ReadWrite)){
-			serializer.Serialize(stream, this);
-		}
+/*		var serializer = new XmlSerializer (typeof(SaveInfo));
+		var writer = new StringWriter (path);
+		serializer.Serialize (writer, this);*/
 	}
 }
 
@@ -143,15 +141,15 @@ public class DataAdapter {
 		container.Save (soulPath);*/
 		// init eDic
 
-		soulPath = Application.streamingAssetsPath + "/SoulElements.xml";
+		soulPath = "SoulElements";
 		var soulContainer = SoulContainer.Load (soulPath);
 		soulDict = soulContainer.ToDict ();
 
-		stagePath = Application.streamingAssetsPath + "/Stages.xml";
+		stagePath = "Stages";
 		var stageContainer = StageContainer.Load (stagePath);
 		stageDict = stageContainer.ToDict ();
 
-		savePath = Application.streamingAssetsPath + "/Save.xml";
+		savePath = "Save";
 		saveInfo = SaveInfo.Load (savePath);
 	}
 
@@ -201,6 +199,11 @@ public class DataAdapter {
 
 	public SaveInfo GetSaveInfo(){
 		return saveInfo;
+	}
+
+	public void Save(string stageName){
+		saveInfo.stageName = stageName;
+		saveInfo.Save (savePath);
 	}
 
 	void Test(){

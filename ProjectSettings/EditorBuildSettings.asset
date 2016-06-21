@@ -8,4 +8,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Stages/Main.unity
   - enabled: 1
-    path: Assets/Stages/Stage00/Stage00.unity
+    path: Assets/Stages/Stage01/Stage01.unity
+  - enabled: 1
+    path: Assets/Stages/Stage02/Stage02.unity
+  - enabled: 1
+    path: Assets/Stages/Stage03/Stage03.unity
+  - enabled: 1
+    path: Assets/Stages/Stage04/Stage04.unity
+  - enabled: 1
+    path: Assets/Stages/Stage05/Stage05.unity

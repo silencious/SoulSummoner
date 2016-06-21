@@ -4,40 +4,38 @@ using System.Collections.Generic;
 
 public class LiveBehaviour : SoulBehaviour {
 	public float hp;
-	protected float moveSpeed = 1.0f;	// by default
+	protected float moveSpeed = 10.0f;	// by default
 	protected float minRouteDis = 1.0f;
-	protected float maxRouteDis = 20.0f;
+	public float maxRouteDis = 20.0f;
 
 	public LinkedList<Vector3> waypoints;
 
 	// Use this for initialization
-	protected override void Start () {
+	protected virtual void Start () {
 		base.Start ();
 		hp = elements.sigma ();
 	}
 
 	protected virtual void FixedUpdate(){
-		if(waypoints==null || waypoints.Count==0){
+		if(waypoints==null||waypoints.Count==0){
 			dm.ReRoute (this);
+		}else{
+			DoRoute ();			
 		}
-		DoRoute();
 	}
 	
 	// Update is called once per frame
-	protected override void Update () {
-		if(hp<=0){
-			Debug.Log (soulName + ": hp <= 0, destroy");
-			Destroy (gameObject);
-		}
+	protected virtual void Update () {
+		
 	}
 
-	void OnDestroy(){
+	protected virtual void OnDestroy(){
 		dm.Remove (this);
 	}
 
 	protected void DoRoute(){
+		//Debug.Log ("DoRoute");
 		var target = waypoints.First.Value;
-		//Debug.Log (target);
 		while (CloseEnough (target)) {
 			if(waypoints.Count==1){
 				waypoints.Clear ();
@@ -50,9 +48,18 @@ public class LiveBehaviour : SoulBehaviour {
 	}
 
 	public void MoveTowards(Vector3 dst, float time){
+		Debug.Log (soulName +" Move towards" + dst);
 		var v = dst - transform.position;
 		v.y = 0;
-		transform.position += v * moveSpeed * time;
+		transform.position += v.normalized * moveSpeed * time;
+		transform.forward = v;
+	}
+
+	public void Chase(){
+		if(waypoints==null || waypoints.Count==0){
+			dm.ReRoute (this);
+		}
+		DoRoute();
 	}
 
 	protected void Fight(LiveBehaviour live){
@@ -60,11 +67,13 @@ public class LiveBehaviour : SoulBehaviour {
 		if(hp*factor<live.hp){
 			live.hp -= hp * factor;
 			hp = 0;
-			Debug.Log (soulName+" vs "+live.soulName+", "+soulName+" died");
+			Destroy (gameObject);
+			//Debug.Log (soulName+" vs "+live.soulName+", "+soulName+" died");
 		}else{
 			hp -= live.hp / factor;
 			live.hp = 0;
-			Debug.Log (soulName+" vs "+live.soulName+", "+live.soulName+" died");
+			Destroy (live.gameObject);
+			//Debug.Log (soulName+" vs "+live.soulName+", "+live.soulName+" died");
 		}
 	}
 

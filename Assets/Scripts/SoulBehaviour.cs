@@ -16,7 +16,7 @@ public class SoulBehaviour : MonoBehaviour {
 			soulName = gameObject.name;			
 		}
 		elements = data.GetElementsByName (soulName);
-		Debug.Log (soulName+": "+elements);
+		//Debug.Log (soulName+": "+elements);
 	}
 
 	// Update is called once per frame

@@ -26,13 +26,14 @@ public class TransportZone : MonoBehaviour {
         {
 			if(gameObject.name.Equals("TransportClearStage")){
 				ui.ClearStage ();
+			}else{
+				obj.transform.position = destination.transform.position;
+				//obj.transform.LookAt(forward.transform);
+				obj.transform.rotation = destination.transform.rotation;
+				//Debug.Log(obj.transform.rotation.eulerAngles);
+				Rigidbody rb = obj.GetComponent<Rigidbody>();
+				rb.velocity = new Vector3(0, 0, 0);				
 			}
-            obj.transform.position = destination.transform.position;
-            //obj.transform.LookAt(forward.transform);
-            obj.transform.rotation = destination.transform.rotation;
-            //Debug.Log(obj.transform.rotation.eulerAngles);
-            Rigidbody rb = obj.GetComponent<Rigidbody>();
-            rb.velocity = new Vector3(0, 0, 0);
         }
     }
     void OnTriggerStay(Collider other)

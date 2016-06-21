@@ -16,6 +16,7 @@ public class UIDisplay : MonoBehaviour {
 	public float pcHP = 1;
 
 	public GameObject pauseMenu;
+	public GameObject loseMenu;
 	public GameObject pc;
 
 	//public Texture2D cursorTexture;
@@ -34,6 +35,8 @@ public class UIDisplay : MonoBehaviour {
 
 			pauseMenu = transform.Find ("PauseMenu").gameObject;
 			pauseMenu.SetActive (false);
+			loseMenu = transform.Find ("LoseMenu").gameObject;
+			loseMenu.SetActive (false);
 
 			pc = GameObject.Find ("PC");
 /*			cursorTexture = Resources.Load ("UI/Cursor") as Texture2D;
@@ -43,8 +46,8 @@ public class UIDisplay : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetKey(KeyCode.Escape)){
-			if(pauseMenu.activeSelf){
+		if(Input.GetKeyDown(KeyCode.Q)){
+			if(pauseMenu.activeInHierarchy){
 				Resume ();
 			}else{
 				Pause ();
@@ -86,18 +89,20 @@ public class UIDisplay : MonoBehaviour {
 
 	public void UpdatePCHP(float hp){
 		pcHP = Mathf.Min(hp, pcHPCeil);
-		UpdateHealthPie ();
+		UpdateHealthPie ();	
 	}
 
 	void UpdateHealthPie(){
 		if(healthPie==null){
 			healthPie = transform.Find ("HealthPie");
 		}
-		healthPie.Find ("HP").localScale = Vector3.one * pcHP / pcHPCeil;
-		healthPie.Find ("HPValue").GetComponent<Text> ().text = Mathf.FloorToInt (pcHP).ToString ();
+		//Debug.Log ("pcHP: " + pcHP + " pcHPCeil:" + pcHPCeil);
+		float v = pcHP / pcHPCeil;
+		if(!float.IsNaN(v)){
+			healthPie.Find ("HP").localScale = new Vector3 (v, v, v);
+			healthPie.Find ("HPValue").GetComponent<Text> ().text = Mathf.FloorToInt (pcHP).ToString ();
+		}
 	}
-
-
 
 	public void StartGame(){
 		SceneManager.LoadScene ("Stage01");
@@ -117,14 +122,16 @@ public class UIDisplay : MonoBehaviour {
 
 	public void Pause(){
 		Debug.Log ("Pause");
-		pauseMenu.SetActive (true);
 		pc.GetComponent<RigidbodyFirstPersonController> ().enabled = false;
+		pauseMenu.SetActive (true);
+		Cursor.visible = true;
 	}
 
 	public void Resume(){
 		Debug.Log ("Resume");
-		pauseMenu.SetActive (false);
 		pc.GetComponent<RigidbodyFirstPersonController> ().enabled = true;
+		pauseMenu.SetActive (false);
+		Cursor.visible = false;
 	}
 
 	public void ReturnToMain(){
@@ -139,5 +146,23 @@ public class UIDisplay : MonoBehaviour {
 
 	public void LoadNextStage(){
 		var currentScene = SceneManager.GetActiveScene ().name;
+		int n = int.Parse (currentScene.Substring (currentScene.Length - 2)) + 1;
+		string nextScene;
+		if(n==5){
+			// clear all stage
+			nextScene = "Main";
+		}else{
+			nextScene = "Stage0" + n;			
+		}
+		data.Save (nextScene);
+
+		SceneManager.LoadScene (nextScene);
+	}
+
+	public void GameOver(){
+		Debug.Log ("Lose");
+		pc.GetComponent<RigidbodyFirstPersonController> ().enabled = false;
+		loseMenu.SetActive (true);
+		Cursor.visible = true;
 	}
 }

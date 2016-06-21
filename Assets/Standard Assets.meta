@@ -1,7 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: aeb989fdb83c455499ceb25ffdb81645
 folderAsset: yes
 timeCreated: 1465913151
+=======
+guid: d7d113c216972d042af385be44de42b2
+folderAsset: yes
+timeCreated: 1466043825
+>>>>>>> origin/aaron_branch
 licenseType: Free
 DefaultImporter:
   userData: 

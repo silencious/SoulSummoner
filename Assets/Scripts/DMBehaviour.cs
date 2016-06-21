@@ -18,6 +18,7 @@ public class DMBehaviour : MonoBehaviour {
 	List<LiveBehaviour> lives = new List<LiveBehaviour>();
 
 	const string routeDir = "RouteMaps/";
+	float maxRouteDistance = 100.0f;
 
 	// Use this for initialization
 	void Start () {
@@ -101,7 +102,7 @@ public class DMBehaviour : MonoBehaviour {
 			reserve -= data.GetElementsByName (soulName);
 			mobs.Add (mob, Distance (gameObject.transform, pcTransform));
 			ReRoute (mob);
-			Debug.Log ("Spawn mob:" + soulName);
+			//Debug.Log ("Spawn mob:" + soulName);
 			return;
 		}
 
@@ -123,13 +124,17 @@ public class DMBehaviour : MonoBehaviour {
 			reserve = Elements.min(Elements.zero, reserve - data.GetElementsByName (soulName));
 			lives.Add (live);
 			ReRoute (live);
-			Debug.Log ("Summon soul:" + soulName);
+			//Debug.Log ("Summon soul:" + soulName);
 			return;
 		}
 	}
 
 	public void RouteTo(LiveBehaviour live, Vector3 pos){
 		//Debug.Log ("Route from " + live.transform.position + " to " + pos);
+		var distance = (pos - live.transform.position).magnitude;
+		if(distance>maxRouteDistance){
+			return;
+		}
 		var path = RouteMap.Path (live.transform.position, pos);
 		if(path.Count==0){
 			path.AddLast (pos);
@@ -139,14 +144,60 @@ public class DMBehaviour : MonoBehaviour {
 		live.waypoints = path;
 	}
 
+	public Vector3 PickLiveTarget(MobBehaviour mob){
+		if(lives.Count == 0){
+			return pcTransform.position;
+		}
+		Transform candidate = null;
+		float factor = 0;
+		foreach(var live in lives){
+			if(Distance(mob.transform, live.transform)>maxRouteDistance){
+				continue;
+			}
+			float temp = Elements.factor (mob.elements, live.elements);
+			if(temp > factor){
+				factor = temp;
+				candidate = live.transform;
+			}
+		}
+		if(candidate==null){
+			return pcTransform.position;			
+		}else{
+			return candidate.position;
+		}
+	}
+
+	public Vector3 PickMobTarget(LiveBehaviour live){
+		if(mobs.Count==0){
+			return pcTransform.position;
+		}
+		Transform candidate = null;
+		float distance = float.MaxValue;
+		foreach(var entry in mobs){
+			float value = entry.Value;
+			if(value>maxRouteDistance || Distance(live.transform, entry.Key.transform)>maxRouteDistance){
+				continue;
+			}
+			if(value < distance){
+				distance = value;
+				candidate = entry.Key.transform;
+			}
+		}
+		if(candidate==null){
+			return pcTransform.position;			
+		}else{
+			return candidate.position;
+		}
+	}
+
 	public void ReRoute(LiveBehaviour live){
 		if(live is MobBehaviour){
-			RouteTo (live, pcTransform.position);
+			RouteTo (live, PickLiveTarget(live as MobBehaviour));
 		}else{
 			if(pc.focus.Equals(Vector3.zero)){
-				RouteTo (live, pc.transform.position);
+				RouteTo (live, PickMobTarget(live));
 			}else{
-				RouteTo (live, pc.focus);				
+				RouteTo (live, pc.focus);
 			}
 		}
 	}
@@ -183,7 +234,7 @@ public class DMBehaviour : MonoBehaviour {
 		}
 	}
 
-	float Distance(Transform t1, Transform t2){
+	public static float Distance(Transform t1, Transform t2){
 		return (t2.position - t1.position).magnitude;
 	}
 

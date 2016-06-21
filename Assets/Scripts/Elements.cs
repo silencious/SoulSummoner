@@ -66,9 +66,11 @@ public class Elements{
 		fire /= mag;
 	}
 
-	public static float factor(Elements e1, Elements e2){
-		e1.normalize ();
-		e2.normalize ();
+	public static float factor(Elements element1, Elements element2){
+		if(element1==null||element2==null){
+			return 1;
+		}
+		Elements e1 = element1.normalized (), e2 = element2.normalized ();
 		float index = e1.metal*(e2.plant-e2.fire)+
 			e1.plant*(e2.earth-e2.metal)+
 			e1.earth*(e2.water-e2.plant)+
